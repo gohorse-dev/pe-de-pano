@@ -1,0 +1,64 @@
+{
+  "name": "@gohorse/app-discord-bot",
+  "version": "0.0.0",
+  "description": "Discord BOT by discord.gg/gohorse",
+  "bin": "js/index.js",
+  "main": "js/index.js",
+  "types": "js/index.d.ts",
+  "scripts": {
+    "format": "prettier --write \"ts/**/*.ts\" \"test/**/*.ts\" \"js/**/*.js\" \"translat*.json\"",
+    "lint": "eslint \"ts/**/*.ts\"",
+    "format+lint": "npm run format && npm run lint",
+    "test": "jest --config jest.config.ts",
+    "build": "tsc",
+    "build:prod": "npm run build && npm run format+lint && npm run test",
+    "start": "ts-node ts/index.ts /id=*",
+    "stop": "ts-node ts/index.ts /id=* /stop",
+    "prepare": "npm run build",
+    "version": "npm run build:prod && git add --all",
+    "postversion": "git push -u origin HEAD && git push origin --tags"
+  },
+  "files": [
+    "js/**/*",
+    "translat*.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gohorse-dev/pe-de-pano.git"
+  },
+  "author": {
+    "name": "gihorse.dev",
+    "email": "gihorse.dev@gihorse.dev",
+    "url": "https://gihorse.dev/"
+  },
+  "keywords": [
+    "gohorse",
+    "discord",
+    "bot"
+  ],
+  "license": "To be define.",
+  "bugs": {
+    "url": "https://github.com/gohorse-dev/pe-de-pano/issues"
+  },
+  "homepage": "https://github.com/gohorse-dev/pe-de-pano#readme",
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "@types/node": "^18.14.1",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.4.3",
+    "prettier": "^2.8.4",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@gohorse/npm-application": "^4.2.3",
+    "@sergiocabral/helper": "^11.10.0",
+    "tslib": "^2.5.0"
+  }
+}
