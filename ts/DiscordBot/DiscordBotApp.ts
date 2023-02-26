@@ -2,6 +2,8 @@ import { DiscordBotAppConfiguration } from './DiscordBotAppConfiguration';
 import { Logger, LogLevel } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
+import { DiscordCommands } from '../DiscordIntegration/DiscordCommands';
+import { ApplicationReady } from './Message/ApplicationReady';
 
 /**
  * Aplicação vazia de exemplo.
@@ -32,6 +34,10 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
       LogLevel.Information,
       DiscordBotApp.logContext
     );
+
+    void new DiscordCommands(() => this.configuration.discord);
+
+    await new ApplicationReady().sendAsync();
 
     return new Promise(resolve => {
       const closeApp = () => {
