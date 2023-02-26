@@ -18,58 +18,33 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
   protected override configurationConstructor = DiscordBotAppConfiguration;
 
   /**
+   * Sinaliza que a aplicação deve finalizar.
+   */
+  private closeApp = false;
+
+  /**
    * Inicia a aplicação.
    */
   protected override async onStart(): Promise<void> {
     Logger.post(
-      'Application up.',
+      'Application started.',
       undefined,
       LogLevel.Information,
       DiscordBotApp.logContext
     );
 
-    const appName = this.parameters.packageName;
-
-    console.info(`      ____`);
-    console.info(`     /  __\\           ____`);
-    console.info(`     \\( oo           (___ \\`);
-    console.info(`     _\\_o/  this is   oo~)/`);
-    console.info(`    / \\|/ \\ a sample  \\-_/_`);
-    console.info(`   / / __\\ \\___ app / \\|/  \\`);
-    console.info(`   \\ \\|   |__/_)   / / .- \\ \\`);
-    console.info(`    \\/_)  |        \\ \\ .  /_/`);
-    console.info(`     ||___|         \\/___(_/`);
-    console.info(`     | | |           | |  |`);
-    console.info(`     | | |           | |  |`);
-    console.info(`     |_|_|           |_|__|`);
-    console.info(`     [__)_)         (_(___] ${appName}`);
-    console.info(``);
-
-    const steps = parseInt(
-      this.parameters.getArgumentName(/^\/?\d+$/)?.replace('/', '') ?? '15'
-    );
-
-    return new Promise<void>(resolve => {
-      let step = 0;
-      const loop = () => {
-        console.info(
-          `Tick ${(++step)
-            .toString()
-            .padStart(
-              steps.toString().length,
-              '0'
-            )}/${steps} ${this.configuration.sampleLabel.translate()}`
-        );
-        if (step === steps) {
+    return new Promise(resolve => {
+      const closeApp = () => {
+        if (this.closeApp) {
           resolve();
         } else {
-          this.timeout = setTimeout(
-            loop,
+          setTimeout(
+            closeApp,
             GlobalDefinition.TIME_OF_ONE_SECOND_IN_MILLISECONDS
           );
         }
       };
-      loop();
+      closeApp();
     });
   }
 
@@ -77,21 +52,12 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
    * Finaliza a aplicação.
    */
   protected override onStop(): void {
-    if (this.timeout !== undefined) {
-      clearTimeout(this.timeout);
-      this.timeout = undefined;
-
-      Logger.post(
-        'Application down.',
-        undefined,
-        LogLevel.Information,
-        DiscordBotApp.logContext
-      );
-    }
+    this.closeApp = true;
+    Logger.post(
+      'Closing application.',
+      undefined,
+      LogLevel.Information,
+      DiscordBotApp.logContext
+    );
   }
-
-  /**
-   * Timeout do loop.
-   */
-  private timeout?: NodeJS.Timeout;
 }
