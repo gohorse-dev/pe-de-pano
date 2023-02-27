@@ -84,12 +84,12 @@ export class Commands {
     }));
 
     Logger.post(
-      'Discord commands registered. Total: {count}. Names: {commandNameList}',
+      'Registering Discord commands. Total: {count}. Names: {commandNameList}',
       () => ({
         count: commands.length,
-        commandNameList: commands.map(command => command.name)
+        commandNameList: commands.map(command => command.name).join(', ')
       }),
-      LogLevel.Debug,
+      LogLevel.Verbose,
       Commands.logContext
     );
 
@@ -114,8 +114,9 @@ export class Commands {
       );
     } catch (error) {
       Logger.post(
-        'An error occurred while registering the commands: {errorDescription}',
+        'An error occurred while registering the commands ({commandNameList}): {errorDescription}',
         {
+          commandNameList: commands.map(command => command.name),
           errorDescription: HelperText.formatError(error),
           error
         },
