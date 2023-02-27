@@ -2,7 +2,7 @@ import { BotAppConfiguration } from './BotAppConfiguration';
 import { Logger, LogLevel, Translate } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
-import { Commands } from '../Integration/Commands';
+import { CommandManager } from '../Integration/CommandManager';
 import { ApplicationReady } from '../Message/ApplicationReady';
 
 /**
@@ -37,7 +37,7 @@ export class BotApp extends Application<BotAppConfiguration> {
 
     Translate.default.selectedLanguage = 'pt-BR';
 
-    void new Commands(() => this.configuration.discord);
+    void new CommandManager(() => this.configuration.discord);
 
     await new ApplicationReady().sendAsync();
 

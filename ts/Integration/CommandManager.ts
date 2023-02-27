@@ -19,11 +19,11 @@ import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsR
 /**
  * Responsável pela gerência de todos os comandos desse bot.
  */
-export class Commands {
+export class CommandManager {
   /**
    * Contexto do log.
    */
-  private static logContext = 'Commands';
+  private static logContext = 'CommandManager';
 
   /**
    * Lista de todos os construtores possíveis desse bot.
@@ -74,7 +74,7 @@ export class Commands {
    * Mensagem: RegisterCommands
    */
   private async handleRegisterCommands(): Promise<void> {
-    this.allCommands = Commands.allCommandsConstructors.map(
+    this.allCommands = CommandManager.allCommandsConstructors.map(
       commandConstructor => new commandConstructor()
     );
 
@@ -90,7 +90,7 @@ export class Commands {
         commandNameList: commands.map(command => command.name).join(', ')
       }),
       LogLevel.Verbose,
-      Commands.logContext
+      CommandManager.logContext
     );
 
     try {
@@ -110,7 +110,7 @@ export class Commands {
           commandNameList: response.map(command => command.name).join(', ')
         }),
         LogLevel.Debug,
-        Commands.logContext
+        CommandManager.logContext
       );
     } catch (error) {
       Logger.post(
@@ -121,7 +121,7 @@ export class Commands {
           error
         },
         LogLevel.Error,
-        Commands.logContext
+        CommandManager.logContext
       );
     }
   }
