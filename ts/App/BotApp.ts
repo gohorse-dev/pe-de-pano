@@ -4,6 +4,7 @@ import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
 import { CommandManager } from '../Integration/CommandManager';
 import { ApplicationReady } from '../Message/ApplicationReady';
+import { ServerManager } from '../Integration/ServerManager';
 
 /**
  * Aplicação vazia de exemplo.
@@ -38,6 +39,7 @@ export class BotApp extends Application<BotAppConfiguration> {
     Translate.default.selectedLanguage = 'pt-BR';
 
     void new CommandManager(() => this.configuration.discord);
+    void new ServerManager(() => this.configuration.discord);
 
     await new ApplicationReady().sendAsync();
 
