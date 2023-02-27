@@ -1,4 +1,10 @@
-import { Logger, LogLevel, Message } from '@sergiocabral/helper';
+import {
+  HelperText,
+  InvalidDataError,
+  Logger,
+  LogLevel,
+  Message
+} from '@sergiocabral/helper';
 import { RegisterCommands } from '../Message/RegisterCommands';
 import { IntegrationConfiguration } from './IntegrationConfiguration';
 import { ApplicationReady } from '../Message/ApplicationReady';
@@ -8,6 +14,7 @@ import { REST, Routes } from 'discord.js';
 import { ICommand } from '../Commands/ICommand';
 import { Ping } from '../Commands/Implementation/Ping';
 import { Hello } from '../Commands/Implementation/Hello';
+import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -67,15 +74,6 @@ export class Commands {
    * Mensagem: RegisterCommands
    */
   private async handleRegisterCommands(): Promise<void> {
-    Logger.post(
-      'Registering Discord commands. Total: {count}.',
-      () => ({
-        count: Commands.allCommandsConstructors.length
-      }),
-      LogLevel.Verbose,
-      Commands.logContext
-    );
-
     this.allCommands = Commands.allCommandsConstructors.map(
       commandConstructor => new commandConstructor()
     );
@@ -84,13 +82,6 @@ export class Commands {
       name: command.name,
       description: command.description
     }));
-
-    const response = await this.rest.put(
-      Routes.applicationCommands(this.configuration.applicationId),
-      { body: commands }
-    );
-
-    // TODO: Usar `response` no log posterior.
 
     Logger.post(
       'Discord commands registered. Total: {count}. Names: {commandNameList}',
@@ -101,6 +92,37 @@ export class Commands {
       LogLevel.Debug,
       Commands.logContext
     );
+
+    try {
+      const response = (await this.rest.put(
+        Routes.applicationCommands(this.configuration.applicationId),
+        { body: commands }
+      )) as ApplicationCommandsResult[];
+
+      if (!Array.isArray(response)) {
+        throw new InvalidDataError('An array is expected as a result.');
+      }
+
+      Logger.post(
+        'Discord commands registered. Total: {count}. Names: {commandNameList}',
+        () => ({
+          count: response.length,
+          commandNameList: response.map(command => command.name).join(', ')
+        }),
+        LogLevel.Debug,
+        Commands.logContext
+      );
+    } catch (error) {
+      Logger.post(
+        'An error occurred while registering the commands: {errorDescription}',
+        {
+          errorDescription: HelperText.formatError(error),
+          error
+        },
+        LogLevel.Error,
+        Commands.logContext
+      );
+    }
   }
 
   /**
