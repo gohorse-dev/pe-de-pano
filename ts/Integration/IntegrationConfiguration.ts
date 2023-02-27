@@ -3,7 +3,7 @@ import { JsonLoader } from '@sergiocabral/helper';
 /**
  * Configurações para integração com o Discord.
  */
-export class DiscordIntegrationConfiguration extends JsonLoader {
+export class IntegrationConfiguration extends JsonLoader {
   /**
    * Identificador da aplicação.
    */

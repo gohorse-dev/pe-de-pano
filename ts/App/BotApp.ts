@@ -1,23 +1,23 @@
-import { DiscordBotAppConfiguration } from './DiscordBotAppConfiguration';
-import { Logger, LogLevel } from '@sergiocabral/helper';
+import { BotAppConfiguration } from './BotAppConfiguration';
+import { Logger, LogLevel, Translate } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
-import { DiscordCommands } from '../DiscordIntegration/DiscordCommands';
-import { ApplicationReady } from './Message/ApplicationReady';
+import { Commands } from '../Integration/Commands';
+import { ApplicationReady } from '../Message/ApplicationReady';
 
 /**
  * Aplicação vazia de exemplo.
  */
-export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
+export class BotApp extends Application<BotAppConfiguration> {
   /**
    * Contexto do log.
    */
-  private static logContext = 'DiscordBotApp';
+  private static logContext = 'BotApp';
 
   /**
    * Tipo da Configurações da aplicação;
    */
-  protected override configurationConstructor = DiscordBotAppConfiguration;
+  protected override configurationConstructor = BotAppConfiguration;
 
   /**
    * Sinaliza que a aplicação deve finalizar.
@@ -32,10 +32,12 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
       'Application started.',
       undefined,
       LogLevel.Information,
-      DiscordBotApp.logContext
+      BotApp.logContext
     );
 
-    void new DiscordCommands(() => this.configuration.discord);
+    Translate.default.selectedLanguage = 'pt-BR';
+
+    void new Commands(() => this.configuration.discord);
 
     await new ApplicationReady().sendAsync();
 
@@ -63,7 +65,7 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
       'Closing application.',
       undefined,
       LogLevel.Information,
-      DiscordBotApp.logContext
+      BotApp.logContext
     );
   }
 }
