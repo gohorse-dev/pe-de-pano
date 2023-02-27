@@ -164,7 +164,7 @@ export class ServerManager {
         Logger.post(
           'Login completed successfully.',
           undefined,
-          LogLevel.Debug,
+          LogLevel.Information,
           ServerManager.logContext
         );
 
@@ -215,6 +215,13 @@ export class ServerManager {
 
       this.client.destroy();
       this.client = this.createClient();
+
+      Logger.post(
+        'Dropped client with discord to log off.',
+        undefined,
+        LogLevel.Information,
+        ServerManager.logContext
+      );
 
       resolve(true);
     });
