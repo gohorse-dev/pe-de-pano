@@ -5,6 +5,7 @@ import { Application } from '@gohorse/npm-application';
 import { CommandManager } from '../Integration/CommandManager';
 import { ApplicationReady } from '../Message/ApplicationReady';
 import { ServerManager } from '../Integration/ServerManager';
+import { InteractionManager } from '../Integration/InteractionManager';
 
 /**
  * Aplicação vazia de exemplo.
@@ -40,6 +41,7 @@ export class BotApp extends Application<BotAppConfiguration> {
 
     void new CommandManager(() => this.configuration.discord);
     void new ServerManager(() => this.configuration.discord);
+    void new InteractionManager();
 
     await new ApplicationReady().sendAsync();
 
