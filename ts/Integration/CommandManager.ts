@@ -155,7 +155,29 @@ export class CommandManager {
     if (interaction.isCommand()) {
       for (const command of this.commands) {
         if (command.name === interaction.commandName) {
-          await command.run(interaction);
+          try {
+            Logger.post(
+              'Running the "{commandName}" command.',
+              {
+                commandName: command.name
+              },
+              LogLevel.Debug,
+              CommandManager.logContext
+            );
+
+            await command.run(interaction);
+          } catch (error) {
+            Logger.post(
+              'Error executing command "{commandName}": {errorDescription}',
+              {
+                commandName: command.name,
+                errorDescription: HelperText.formatError(error),
+                error
+              },
+              LogLevel.Error,
+              CommandManager.logContext
+            );
+          }
         }
       }
     }
