@@ -171,7 +171,7 @@ export class ServerManager {
         client.off('ready', onReady);
         resolve(true);
 
-        new DiscordClientConnected().send();
+        new DiscordClientConnected(client).send();
       };
       client.on('ready', onReady);
 
@@ -211,12 +211,12 @@ export class ServerManager {
         );
       }
 
+      new DiscordClientDisconnected(this.client).send();
+
       this.client.destroy();
       this.client = this.createClient();
 
       resolve(true);
-
-      new DiscordClientDisconnected().send();
     });
   }
 }

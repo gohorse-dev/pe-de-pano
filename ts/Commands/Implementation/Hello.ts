@@ -1,4 +1,5 @@
 import { Command } from '../Command';
+import { CommandInteraction } from 'discord.js';
 
 export class Hello extends Command {
   /**
@@ -10,4 +11,12 @@ export class Hello extends Command {
    * Descrição.
    */
   public description = 'A Hello World command.'.translate();
+
+  /**
+   * Executa o comando.
+   * @param interaction Interação chegada do discord.
+   */
+  public override async run(interaction: CommandInteraction): Promise<void> {
+    await interaction.reply('world');
+  }
 }

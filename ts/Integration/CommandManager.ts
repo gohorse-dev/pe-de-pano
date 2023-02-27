@@ -15,6 +15,7 @@ import { ICommand } from '../Commands/ICommand';
 import { Ping } from '../Commands/Implementation/Ping';
 import { Hello } from '../Commands/Implementation/Hello';
 import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
+import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -49,6 +50,10 @@ export class CommandManager {
     );
     Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
     Message.subscribe(RegisterCommands, this.handleRegisterCommands.bind(this));
+    Message.subscribe(
+      DiscordInteractionReceived,
+      this.handleDiscordInteractionReceived.bind(this)
+    );
   }
 
   private configuration: IntegrationConfiguration;
@@ -56,7 +61,7 @@ export class CommandManager {
   /**
    * Lista de comandos.
    */
-  private allCommands: ICommand[] = [];
+  private commands: ICommand[] = [];
 
   /**
    * Comunicador com a API do Discord via REST.
@@ -74,11 +79,11 @@ export class CommandManager {
    * Mensagem: RegisterCommands
    */
   private async handleRegisterCommands(): Promise<void> {
-    this.allCommands = CommandManager.allCommandsConstructors.map(
+    this.commands = CommandManager.allCommandsConstructors.map(
       commandConstructor => new commandConstructor()
     );
 
-    const commands = this.allCommands.map(command => ({
+    const commands = this.commands.map(command => ({
       name: command.name,
       description: command.description
     }));
@@ -136,6 +141,23 @@ export class CommandManager {
     if (configuration !== undefined) {
       await new RegisterCommands().sendAsync();
       this.rest = this.createRest();
+    }
+  }
+
+  /**
+   * Mensagem: DiscordInteractionReceived
+   */
+  private async handleDiscordInteractionReceived(
+    message: DiscordInteractionReceived
+  ): Promise<void> {
+    const interaction = message.interaction;
+
+    if (interaction.isCommand()) {
+      for (const command of this.commands) {
+        if (command.name === interaction.commandName) {
+          await command.run(interaction);
+        }
+      }
     }
   }
 
