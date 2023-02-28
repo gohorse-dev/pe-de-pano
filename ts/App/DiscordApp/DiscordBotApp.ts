@@ -6,6 +6,7 @@ import { CommandManager } from '../../DiscordIntegration/CommandManager';
 import { ApplicationReady } from '../../Message/Application/ApplicationReady';
 import { ServerManager } from '../../DiscordIntegration/ServerManager';
 import { InteractionManager } from '../../DiscordIntegration/InteractionManager';
+import { DominosPizza } from '../../Service/DominosPizza/DominosPizza';
 
 /**
  * Aplicação vazia de exemplo.
@@ -39,6 +40,7 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
 
     Translate.default.selectedLanguage = 'pt-BR';
 
+    void new DominosPizza();
     void new CommandManager(() => this.configuration.discord);
     void new ServerManager(() => this.configuration.discord);
     void new InteractionManager();

@@ -16,6 +16,7 @@ import { Ping } from '../Commands/Implementation/Ping';
 import { Hello } from '../Commands/Implementation/Hello';
 import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
 import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
+import { DominosPizzaPrice } from '../Commands/Implementation/DominosPizzaPrice';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -31,7 +32,8 @@ export class CommandManager {
    */
   public static allCommandsConstructors: Array<new () => ICommand> = [
     Ping,
-    Hello
+    Hello,
+    DominosPizzaPrice
   ];
 
   /**
