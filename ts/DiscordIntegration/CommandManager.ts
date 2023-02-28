@@ -5,9 +5,9 @@ import {
   LogLevel,
   Message
 } from '@sergiocabral/helper';
-import { RegisterCommands } from '../Message/RegisterCommands';
+import { RegisterCommandOnDiscord } from '../Message/Discord/RegisterCommandOnDiscord';
 import { IntegrationConfiguration } from './IntegrationConfiguration';
-import { ApplicationReady } from '../Message/ApplicationReady';
+import { ApplicationReady } from '../Message/Application/ApplicationReady';
 import { ConfigurationReloaded } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
@@ -15,7 +15,7 @@ import { ICommand } from '../Commands/ICommand';
 import { Ping } from '../Commands/Implementation/Ping';
 import { Hello } from '../Commands/Implementation/Hello';
 import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
-import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
+import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -49,7 +49,10 @@ export class CommandManager {
       this.handleConfigurationReloaded.bind(this)
     );
     Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
-    Message.subscribe(RegisterCommands, this.handleRegisterCommands.bind(this));
+    Message.subscribe(
+      RegisterCommandOnDiscord,
+      this.handleRegisterCommands.bind(this)
+    );
     Message.subscribe(
       DiscordInteractionReceived,
       this.handleDiscordInteractionReceived.bind(this)
@@ -72,7 +75,7 @@ export class CommandManager {
    * Mensagem: ApplicationReady
    */
   private async handleApplicationReady(): Promise<void> {
-    await new RegisterCommands().sendAsync();
+    await new RegisterCommandOnDiscord().sendAsync();
   }
 
   /**
@@ -139,7 +142,7 @@ export class CommandManager {
       this.getConfiguration
     );
     if (configuration !== undefined) {
-      await new RegisterCommands().sendAsync();
+      await new RegisterCommandOnDiscord().sendAsync();
       this.rest = this.createRest();
     }
   }

@@ -1,16 +1,16 @@
-import { BotAppConfiguration } from './BotAppConfiguration';
+import { DiscordBotAppConfiguration } from './DiscordBotAppConfiguration';
 import { Logger, LogLevel, Translate } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
-import { CommandManager } from '../Integration/CommandManager';
-import { ApplicationReady } from '../Message/ApplicationReady';
-import { ServerManager } from '../Integration/ServerManager';
-import { InteractionManager } from '../Integration/InteractionManager';
+import { CommandManager } from '../../DiscordIntegration/CommandManager';
+import { ApplicationReady } from '../../Message/Application/ApplicationReady';
+import { ServerManager } from '../../DiscordIntegration/ServerManager';
+import { InteractionManager } from '../../DiscordIntegration/InteractionManager';
 
 /**
  * Aplicação vazia de exemplo.
  */
-export class BotApp extends Application<BotAppConfiguration> {
+export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
   /**
    * Contexto do log.
    */
@@ -19,7 +19,7 @@ export class BotApp extends Application<BotAppConfiguration> {
   /**
    * Tipo da Configurações da aplicação;
    */
-  protected override configurationConstructor = BotAppConfiguration;
+  protected override configurationConstructor = DiscordBotAppConfiguration;
 
   /**
    * Sinaliza que a aplicação deve finalizar.
@@ -34,7 +34,7 @@ export class BotApp extends Application<BotAppConfiguration> {
       'Application started.',
       undefined,
       LogLevel.Information,
-      BotApp.logContext
+      DiscordBotApp.logContext
     );
 
     Translate.default.selectedLanguage = 'pt-BR';
@@ -69,7 +69,7 @@ export class BotApp extends Application<BotAppConfiguration> {
       'Closing application.',
       undefined,
       LogLevel.Information,
-      BotApp.logContext
+      DiscordBotApp.logContext
     );
   }
 }

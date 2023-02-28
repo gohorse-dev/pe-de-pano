@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
-import { BotApp } from './App/BotApp';
-import { BotAppConfiguration } from './App/BotAppConfiguration';
+import { DiscordBotApp } from './App/DiscordApp/DiscordBotApp';
+import { DiscordBotAppConfiguration } from './App/DiscordApp/DiscordBotAppConfiguration';
 import { ApplicationParameters } from '@gohorse/npm-application';
 
 const commandLine = process.argv.join(' ');
@@ -9,7 +9,7 @@ if (
   commandLine.includes(ApplicationParameters.packageName) ||
   commandLine.includes('ts-node')
 ) {
-  void new BotApp().run();
+  void new DiscordBotApp().run();
 }
 
-export { BotApp, BotAppConfiguration };
+export { DiscordBotApp, DiscordBotAppConfiguration };

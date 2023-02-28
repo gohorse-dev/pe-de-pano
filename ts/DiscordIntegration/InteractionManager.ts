@@ -1,8 +1,8 @@
 import { Logger, LogLevel, Message } from '@sergiocabral/helper';
-import { DiscordClientConnected } from '../Message/DiscordClientConnected';
+import { DiscordClientConnected } from '../Message/Discord/DiscordClientConnected';
 import { Interaction } from 'discord.js';
-import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
-import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
+import { DiscordClientDisconnected } from '../Message/Discord/DiscordClientDisconnected';
+import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
 
 /**
  * Responsável pelas interações com o Discord.

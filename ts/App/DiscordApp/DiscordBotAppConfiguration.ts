@@ -1,10 +1,10 @@
 import { ApplicationConfiguration } from '@gohorse/npm-application';
-import { IntegrationConfiguration } from '../Integration/IntegrationConfiguration';
+import { IntegrationConfiguration } from '../../DiscordIntegration/IntegrationConfiguration';
 
 /**
  * Configurações da aplicação.
  */
-export class BotAppConfiguration extends ApplicationConfiguration {
+export class DiscordBotAppConfiguration extends ApplicationConfiguration {
   /**
    * Uma propriedade qualquer.
    */

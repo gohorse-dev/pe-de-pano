@@ -6,7 +6,7 @@ import {
   Message
 } from '@sergiocabral/helper';
 import { IntegrationConfiguration } from './IntegrationConfiguration';
-import { ApplicationReady } from '../Message/ApplicationReady';
+import { ApplicationReady } from '../Message/Application/ApplicationReady';
 import {
   ApplicationTerminated,
   ConfigurationReloaded,
@@ -14,8 +14,8 @@ import {
 } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { Client, IntentsBitField } from 'discord.js';
-import { DiscordClientConnected } from '../Message/DiscordClientConnected';
-import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
+import { DiscordClientConnected } from '../Message/Discord/DiscordClientConnected';
+import { DiscordClientDisconnected } from '../Message/Discord/DiscordClientDisconnected';
 
 /**
  * Responsável pela gerência da comunicação com o Discord.
