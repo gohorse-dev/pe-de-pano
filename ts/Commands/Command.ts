@@ -10,7 +10,7 @@ export abstract class Command implements ICommand {
    * Construtor.
    * @param configuration Configurações usadas na construção de um comando.
    */
-  public constructor(private readonly configuration: CommandConfiguration) {}
+  public constructor(protected readonly configuration: CommandConfiguration) {}
 
   /**
    * Nome.

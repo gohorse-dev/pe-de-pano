@@ -21,6 +21,7 @@ import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsR
 import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
 import { DominosPizzaPrice } from '../Commands/Implementation/DominosPizzaPrice';
 import { CommandConfiguration } from '../Commands/CommandConfiguration';
+import {Shutdown} from "../Commands/Implementation/Shutdown";
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -36,7 +37,7 @@ export class CommandManager {
    */
   public static allCommandsConstructors: Array<
     new (configuration: CommandConfiguration) => ICommand
-  > = [Ping, Hello, DominosPizzaPrice];
+  > = [Ping, Hello, Shutdown, DominosPizzaPrice];
 
   /**
    * Construtor.
