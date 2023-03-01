@@ -40,12 +40,7 @@ export class InteractionManager {
   public constructor(
     private readonly applicationParameters: ApplicationParameters
   ) {
-    this.allInteractions = InteractionManager.allInteractionsConstructors.map(
-      interactionConstructor =>
-        new interactionConstructor({
-          applicationParameters: this.applicationParameters
-        })
-    );
+    this.allInteractions = this.createInteractionHandlers();
 
     Message.subscribe(
       GetAllInteractions,
@@ -105,5 +100,17 @@ export class InteractionManager {
     );
 
     await new DiscordInteractionReceived(interaction).sendAsync();
+  }
+
+  /**
+   * Cria as instâncias das interações possíveis.
+   */
+  private createInteractionHandlers(): IInteractionHandler[] {
+    return InteractionManager.allInteractionsConstructors.map(
+      interactionConstructor =>
+        new interactionConstructor({
+          applicationParameters: this.applicationParameters
+        })
+    );
   }
 }
