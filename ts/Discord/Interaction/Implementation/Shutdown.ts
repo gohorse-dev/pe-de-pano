@@ -18,12 +18,20 @@ export class Shutdown
   /**
    * Nome.
    */
-  public override name = 'shutdown';
+  public name = 'shutdown';
 
   /**
    * Descrição.
    */
   public description = 'Turn off this bot.'.translate();
+
+  /**
+   * Verifica se é uma interação possível de ser executada.
+   * @param interaction Interação chegada do discord.
+   */
+  public canRun(interaction: Interaction): boolean {
+    return interaction.isCommand() && interaction.commandName === this.name;
+  }
 
   /**
    * Executa o comando.

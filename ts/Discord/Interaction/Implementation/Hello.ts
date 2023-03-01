@@ -12,12 +12,20 @@ export class Hello
   /**
    * Nome.
    */
-  public override name = 'hello';
+  public name = 'hello';
 
   /**
    * Descrição.
    */
   public description = 'A Hello World command.'.translate();
+
+  /**
+   * Verifica se é uma interação possível de ser executada.
+   * @param interaction Interação chegada do discord.
+   */
+  public canRun(interaction: Interaction): boolean {
+    return interaction.isCommand() && interaction.commandName === this.name;
+  }
 
   /**
    * Executa o comando.

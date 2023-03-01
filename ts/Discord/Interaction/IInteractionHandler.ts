@@ -5,6 +5,12 @@ import { Interaction } from 'discord.js';
  */
 export interface IInteractionHandler {
   /**
+   * Verifica se é uma interação possível de ser executada.
+   * @param interaction Interação chegada do discord.
+   */
+  canRun(interaction: Interaction): boolean;
+
+  /**
    * Executa o comando.
    * @param interaction Interação chegada do discord.
    */
@@ -18,5 +24,5 @@ export function isIInteractionHandler(
   instance: unknown
 ): instance is IInteractionHandler {
   const object = instance as Record<string, unknown>;
-  return 'run' in object;
+  return 'canRun' in object && 'run' in object;
 }

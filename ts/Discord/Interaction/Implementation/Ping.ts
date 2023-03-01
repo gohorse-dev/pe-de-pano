@@ -12,12 +12,20 @@ export class Ping
   /**
    * Nome.
    */
-  public override name = 'ping';
+  public name = 'ping';
 
   /**
    * Descrição.
    */
   public description = 'A ping-pong command.'.translate();
+
+  /**
+   * Verifica se é uma interação possível de ser executada.
+   * @param interaction Interação chegada do discord.
+   */
+  public canRun(interaction: Interaction): boolean {
+    return interaction.isCommand() && interaction.commandName === this.name;
+  }
 
   /**
    * Executa o comando.

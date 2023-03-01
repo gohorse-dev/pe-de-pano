@@ -13,7 +13,6 @@ import { ConfigurationReloaded } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
 import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
-import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 import { GetAllInteractions } from '../Message/GetAllInteractions';
 import {
   ICommandInteractionHandler,
@@ -48,10 +47,6 @@ export class CommandInteractionManager {
       RegisterCommandOnDiscord,
       this.handleRegisterCommands.bind(this)
     );
-    Message.subscribe(
-      DiscordInteractionReceived,
-      this.handleDiscordInteractionReceived.bind(this)
-    );
   }
 
   private configuration: DiscordAuthenticationConfiguration;
@@ -59,7 +54,7 @@ export class CommandInteractionManager {
   /**
    * Lista de comandos.
    */
-  private commands: ICommandInteractionHandler[] = [];
+  private allCommands: ICommandInteractionHandler[] = [];
 
   /**
    * Comunicador com a API do Message via REST.
@@ -86,11 +81,11 @@ export class CommandInteractionManager {
       );
     }
 
-    this.commands = allInteractions.filter(interaction =>
+    this.allCommands = allInteractions.filter(interaction =>
       isICommandInteractionHandler(interaction)
     ) as ICommandInteractionHandler[];
 
-    const commands = this.commands.map(command => ({
+    const commands = this.allCommands.map(command => ({
       name: command.name,
       description: command.description
     }));
@@ -148,45 +143,6 @@ export class CommandInteractionManager {
     if (configuration !== undefined) {
       await new RegisterCommandOnDiscord().sendAsync();
       this.rest = this.createRest();
-    }
-  }
-
-  /**
-   * Mensagem: DiscordInteractionReceived
-   */
-  private async handleDiscordInteractionReceived(
-    message: DiscordInteractionReceived
-  ): Promise<void> {
-    const interaction = message.interaction;
-
-    if (interaction.isCommand()) {
-      for (const command of this.commands) {
-        if (command.name === interaction.commandName) {
-          try {
-            Logger.post(
-              'Running the "{commandName}" command.',
-              {
-                commandName: command.name
-              },
-              LogLevel.Debug,
-              CommandInteractionManager.logContext
-            );
-
-            await command.run(interaction);
-          } catch (error) {
-            Logger.post(
-              'Error executing command "{commandName}": {errorDescription}',
-              {
-                commandName: command.name,
-                errorDescription: HelperText.formatError(error),
-                error
-              },
-              LogLevel.Error,
-              CommandInteractionManager.logContext
-            );
-          }
-        }
-      }
     }
   }
 
