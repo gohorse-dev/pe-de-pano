@@ -1,5 +1,5 @@
 import { IInteractionHandler } from './IInteractionHandler';
-import { CommandInteraction } from 'discord.js';
+import { Interaction } from 'discord.js';
 import { InteractionHandlerConfiguration } from './InteractionHandlerConfiguration';
 
 /**
@@ -28,5 +28,5 @@ export abstract class InteractionHandler implements IInteractionHandler {
    * Executa o comando.
    * @param interaction Interação chegada do discord.
    */
-  public abstract run(interaction: CommandInteraction): Promise<void>;
+  public abstract run(interaction: Interaction): Promise<void>;
 }

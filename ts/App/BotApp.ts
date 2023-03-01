@@ -41,12 +41,9 @@ export class BotApp extends Application<BotAppConfiguration> {
     Translate.default.selectedLanguage = 'pt-BR';
 
     void new DominosPizzaService();
-    void new CommandInteractionManager(
-      () => this.configuration.discord,
-      this.parameters
-    );
+    void new CommandInteractionManager(() => this.configuration.discord);
     void new ConnectionManager(() => this.configuration.discord);
-    void new InteractionManager();
+    void new InteractionManager(this.parameters);
 
     await new ApplicationReady().sendAsync();
 

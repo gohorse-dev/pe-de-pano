@@ -3,6 +3,14 @@ import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { Events, Interaction } from 'discord.js';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
+import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
+import { IInteractionHandler } from '../Interaction/IInteractionHandler';
+import { Ping } from '../Interaction/Implementation/Ping';
+import { Hello } from '../Interaction/Implementation/Hello';
+import { Shutdown } from '../Interaction/Implementation/Shutdown';
+import { DominosPizzaPrice } from '../Interaction/Implementation/DominosPizzaPrice';
+import { ApplicationParameters } from '@gohorse/npm-application';
+import { GetAllInteractions } from '../Message/GetAllInteractions';
 
 /**
  * Responsável pelas interações com o Discord.
@@ -14,9 +22,35 @@ export class InteractionManager {
   private static logContext = 'InteractionManager';
 
   /**
-   * Construtor.
+   * Lista de todos os construtores de interações com o Discord.
    */
-  public constructor() {
+  public static allInteractionsConstructors: Array<
+    new (configuration: InteractionHandlerConfiguration) => IInteractionHandler
+  > = [Ping, Hello, Shutdown, DominosPizzaPrice];
+
+  /**
+   * Lista de todas as instâncias de interações com o Discord.
+   */
+  public allInteractions: Array<IInteractionHandler>;
+
+  /**
+   * Construtor.
+   * @param applicationParameters Parâmetros da aplição.
+   */
+  public constructor(
+    private readonly applicationParameters: ApplicationParameters
+  ) {
+    this.allInteractions = InteractionManager.allInteractionsConstructors.map(
+      interactionConstructor =>
+        new interactionConstructor({
+          applicationParameters: this.applicationParameters
+        })
+    );
+
+    Message.subscribe(
+      GetAllInteractions,
+      this.handleGetAllInteractions.bind(this)
+    );
     Message.subscribe(
       DiscordClientConnected,
       this.handleDiscordClientConnected.bind(this)
@@ -25,6 +59,13 @@ export class InteractionManager {
       DiscordClientDisconnected,
       this.handleDiscordClientDisconnected.bind(this)
     );
+  }
+
+  /**
+   * Mensagem: GetAllInteractions
+   */
+  private handleGetAllInteractions(message: GetAllInteractions): void {
+    message.allInteractions = this.allInteractions;
   }
 
   /**

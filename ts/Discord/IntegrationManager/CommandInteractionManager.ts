@@ -1,6 +1,7 @@
 import {
   HelperText,
   InvalidDataError,
+  InvalidExecutionError,
   Logger,
   LogLevel,
   Message
@@ -9,19 +10,15 @@ import { RegisterCommandOnDiscord } from '../Message/RegisterCommandOnDiscord';
 import { DiscordAuthenticationConfiguration } from '../DiscordAuthenticationConfiguration';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
 import { ConfigurationReloaded } from '@gohorse/npm-core';
-import {
-  ApplicationConfiguration,
-  ApplicationParameters
-} from '@gohorse/npm-application';
+import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
-import { IInteractionHandler } from '../Interaction/IInteractionHandler';
-import { Ping } from '../Interaction/Implementation/Ping';
-import { Hello } from '../Interaction/Implementation/Hello';
 import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { DominosPizzaPrice } from '../Interaction/Implementation/DominosPizzaPrice';
-import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
-import { Shutdown } from '../Interaction/Implementation/Shutdown';
+import { GetAllInteractions } from '../Message/GetAllInteractions';
+import {
+  ICommandInteractionHandler,
+  isICommandInteractionHandler
+} from '../Interaction/ICommandInteractionHandler';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -33,20 +30,11 @@ export class CommandInteractionManager {
   private static logContext = 'CommandInteractionManager';
 
   /**
-   * Lista de todos os construtores possíveis desse bot.
-   */
-  public static allCommandsConstructors: Array<
-    new (configuration: InteractionHandlerConfiguration) => IInteractionHandler
-  > = [Ping, Hello, Shutdown, DominosPizzaPrice];
-
-  /**
    * Construtor.
    * @param getConfiguration Configurações.
-   * @param applicationParameters Parâmetros da aplição.
    */
   public constructor(
-    private readonly getConfiguration: () => DiscordAuthenticationConfiguration,
-    private readonly applicationParameters: ApplicationParameters
+    private readonly getConfiguration: () => DiscordAuthenticationConfiguration
   ) {
     this.configuration = getConfiguration();
     this.rest = this.createRest();
@@ -71,7 +59,7 @@ export class CommandInteractionManager {
   /**
    * Lista de comandos.
    */
-  private commands: IInteractionHandler[] = [];
+  private commands: ICommandInteractionHandler[] = [];
 
   /**
    * Comunicador com a API do Message via REST.
@@ -89,12 +77,18 @@ export class CommandInteractionManager {
    * Mensagem: RegisterCommands
    */
   private async handleRegisterCommands(): Promise<void> {
-    this.commands = CommandInteractionManager.allCommandsConstructors.map(
-      commandConstructor =>
-        new commandConstructor({
-          applicationParameters: this.applicationParameters
-        })
-    );
+    const allInteractions = (await new GetAllInteractions().sendAsync()).message
+      .allInteractions;
+
+    if (allInteractions === undefined) {
+      throw new InvalidExecutionError(
+        'The list of interactions returned empty.'
+      );
+    }
+
+    this.commands = allInteractions.filter(interaction =>
+      isICommandInteractionHandler(interaction)
+    ) as ICommandInteractionHandler[];
 
     const commands = this.commands.map(command => ({
       name: command.name,

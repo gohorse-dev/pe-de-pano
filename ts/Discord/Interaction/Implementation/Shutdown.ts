@@ -2,15 +2,19 @@ import { InteractionHandler } from '../InteractionHandler';
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  CommandInteraction,
-  ButtonStyle
+  ButtonStyle,
+  Interaction
 } from 'discord.js';
 import { TerminateApplication } from '@gohorse/npm-core';
+import { ICommandInteractionHandler } from '../ICommandInteractionHandler';
 
 /**
  * Desliga o bot como aplição em execução no sistema operacional.
  */
-export class Shutdown extends InteractionHandler {
+export class Shutdown
+  extends InteractionHandler
+  implements ICommandInteractionHandler
+{
   /**
    * Nome.
    */
@@ -25,7 +29,11 @@ export class Shutdown extends InteractionHandler {
    * Executa o comando.
    * @param interaction Interação chegada do discord.
    */
-  public override async run(interaction: CommandInteraction): Promise<void> {
+  public override async run(interaction: Interaction): Promise<void> {
+    if (!interaction.isCommand()) {
+      return;
+    }
+
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId('no')

@@ -1,8 +1,12 @@
 import { InteractionHandler } from '../InteractionHandler';
-import { CommandInteraction } from 'discord.js';
+import { Interaction } from 'discord.js';
 import { GetDominosPizzaPrice } from '../../../Service/DominosPizza/Message/GetDominosPizzaPrice';
+import { ICommandInteractionHandler } from '../ICommandInteractionHandler';
 
-export class DominosPizzaPrice extends InteractionHandler {
+export class DominosPizzaPrice
+  extends InteractionHandler
+  implements ICommandInteractionHandler
+{
   /**
    * Nome.
    */
@@ -17,7 +21,11 @@ export class DominosPizzaPrice extends InteractionHandler {
    * Executa o comando.
    * @param interaction Interação chegada do discord.
    */
-  public override async run(interaction: CommandInteraction): Promise<void> {
+  public override async run(interaction: Interaction): Promise<void> {
+    if (!interaction.isCommand()) {
+      return;
+    }
+
     const price = (await new GetDominosPizzaPrice().sendAsync()).message.price;
     await interaction.reply(
       `Hoje a cotação da PiXza está em ${price ?? 'sei lá quanto'}.`
