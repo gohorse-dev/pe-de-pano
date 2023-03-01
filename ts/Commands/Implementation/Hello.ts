@@ -1,6 +1,9 @@
 import { Command } from '../Command';
 import { CommandInteraction } from 'discord.js';
 
+/**
+ * Um comando para ping-pong que responde com hello-world
+ */
 export class Hello extends Command {
   /**
    * Nome.
