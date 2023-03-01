@@ -1,6 +1,6 @@
 import { Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordClientConnected } from '../Message/Discord/DiscordClientConnected';
-import { Interaction } from 'discord.js';
+import { Events, Interaction } from 'discord.js';
 import { DiscordClientDisconnected } from '../Message/Discord/DiscordClientDisconnected';
 import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
 
@@ -31,7 +31,10 @@ export class InteractionManager {
    * Mensagem: DiscordClientConnected
    */
   private handleDiscordClientConnected(message: DiscordClientConnected): void {
-    message.client.on('interactionCreate', this.dispatchInteraction.bind(this));
+    message.client.on(
+      Events.InteractionCreate,
+      this.dispatchInteraction.bind(this)
+    );
   }
 
   /**
@@ -41,7 +44,7 @@ export class InteractionManager {
     message: DiscordClientDisconnected
   ): void {
     message.client.off(
-      'interactionCreate',
+      Events.InteractionCreate,
       this.dispatchInteraction.bind(this)
     );
   }
