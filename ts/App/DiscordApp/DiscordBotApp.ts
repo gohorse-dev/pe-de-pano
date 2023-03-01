@@ -41,7 +41,7 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
     Translate.default.selectedLanguage = 'pt-BR';
 
     void new DominosPizza();
-    void new CommandManager(() => this.configuration.discord);
+    void new CommandManager(() => this.configuration.discord, this.parameters);
     void new ServerManager(() => this.configuration.discord);
     void new InteractionManager();
 

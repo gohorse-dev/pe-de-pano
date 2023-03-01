@@ -9,7 +9,10 @@ import { RegisterCommandOnDiscord } from '../Message/Discord/RegisterCommandOnDi
 import { IntegrationConfiguration } from './IntegrationConfiguration';
 import { ApplicationReady } from '../Message/Application/ApplicationReady';
 import { ConfigurationReloaded } from '@gohorse/npm-core';
-import { ApplicationConfiguration } from '@gohorse/npm-application';
+import {
+  ApplicationConfiguration,
+  ApplicationParameters
+} from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
 import { ICommand } from '../Commands/ICommand';
 import { Ping } from '../Commands/Implementation/Ping';
@@ -17,6 +20,7 @@ import { Hello } from '../Commands/Implementation/Hello';
 import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
 import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
 import { DominosPizzaPrice } from '../Commands/Implementation/DominosPizzaPrice';
+import { CommandConfiguration } from '../Commands/CommandConfiguration';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
@@ -30,18 +34,18 @@ export class CommandManager {
   /**
    * Lista de todos os construtores possíveis desse bot.
    */
-  public static allCommandsConstructors: Array<new () => ICommand> = [
-    Ping,
-    Hello,
-    DominosPizzaPrice
-  ];
+  public static allCommandsConstructors: Array<
+    new (configuration: CommandConfiguration) => ICommand
+  > = [Ping, Hello, DominosPizzaPrice];
 
   /**
    * Construtor.
    * @param getConfiguration Configurações.
+   * @param applicationParameters Parâmetros da aplição.
    */
   public constructor(
-    private readonly getConfiguration: () => IntegrationConfiguration
+    private readonly getConfiguration: () => IntegrationConfiguration,
+    private readonly applicationParameters: ApplicationParameters
   ) {
     this.configuration = getConfiguration();
     this.rest = this.createRest();
@@ -85,7 +89,10 @@ export class CommandManager {
    */
   private async handleRegisterCommands(): Promise<void> {
     this.commands = CommandManager.allCommandsConstructors.map(
-      commandConstructor => new commandConstructor()
+      commandConstructor =>
+        new commandConstructor({
+          applicationParameters: this.applicationParameters
+        })
     );
 
     const commands = this.commands.map(command => ({

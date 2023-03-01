@@ -1,10 +1,17 @@
 import { ICommand } from './ICommand';
 import { CommandInteraction } from 'discord.js';
+import { CommandConfiguration } from './CommandConfiguration';
 
 /**
  * Representa um comando do Discord
  */
 export abstract class Command implements ICommand {
+  /**
+   * Construtor.
+   * @param configuration Configurações usadas na construção de um comando.
+   */
+  public constructor(private readonly configuration: CommandConfiguration) {}
+
   /**
    * Nome.
    */
