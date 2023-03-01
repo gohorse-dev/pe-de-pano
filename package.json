@@ -1,6 +1,6 @@
 {
   "name": "@gohorse/app-discord-bot",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "Discord BOT by discord.gg/gohorse",
   "bin": "js/index.js",
   "main": "js/index.js",
