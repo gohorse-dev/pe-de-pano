@@ -1,4 +1,7 @@
 {
+  "name": "pe-de-pano",
+  "version": "1.0.0",
+  "description": "Discord BOT by discord.gg/gohorse",
   "main": "app.js",
   "type": "module",
   "dependencies": {
