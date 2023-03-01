@@ -12,19 +12,21 @@ export class Hello
   /**
    * Nome.
    */
-  public name = 'hello';
+  public commandName = 'hello';
 
   /**
    * Descrição.
    */
-  public description = 'A Hello World command.'.translate();
+  public commandDescription = 'A Hello World command.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.
    * @param interaction Interação chegada do discord.
    */
   public canRun(interaction: Interaction): boolean {
-    return interaction.isCommand() && interaction.commandName === this.name;
+    return (
+      interaction.isCommand() && interaction.commandName === this.commandName
+    );
   }
 
   /**

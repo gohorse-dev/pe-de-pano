@@ -23,12 +23,12 @@ export class Shutdown
   /**
    * Nome.
    */
-  public name = 'shutdown';
+  public commandName = 'shutdown';
 
   /**
    * Descrição.
    */
-  public description = 'Turn off this bot.'.translate();
+  public commandDescription = 'Turn off this bot.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.
@@ -89,7 +89,9 @@ export class Shutdown
     | ChatInputCommandInteraction
     | MessageContextMenuCommandInteraction
     | UserContextMenuCommandInteraction {
-    return interaction.isCommand() && interaction.commandName === this.name;
+    return (
+      interaction.isCommand() && interaction.commandName === this.commandName
+    );
   }
 
   /**

@@ -86,8 +86,8 @@ export class CommandInteractionManager {
     ) as ICommandInteractionHandler[];
 
     const commands = this.allCommands.map(command => ({
-      name: command.name,
-      description: command.description
+      name: command.commandName,
+      description: command.commandDescription
     }));
 
     Logger.post(

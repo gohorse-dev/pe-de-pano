@@ -7,12 +7,12 @@ export interface ICommandInteractionHandler extends IInteractionHandler {
   /**
    * Nome.
    */
-  get name(): string;
+  get commandName(): string;
 
   /**
    * Descrição.
    */
-  get description(): string;
+  get commandDescription(): string;
 }
 
 /**
@@ -22,5 +22,5 @@ export function isICommandInteractionHandler(
   instance: unknown
 ): instance is ICommandInteractionHandler {
   const object = instance as Record<string, unknown>;
-  return 'name' in object && 'description' in object;
+  return 'commandName' in object && 'commandDescription' in object;
 }

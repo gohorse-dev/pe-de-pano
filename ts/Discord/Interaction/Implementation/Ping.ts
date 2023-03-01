@@ -12,19 +12,21 @@ export class Ping
   /**
    * Nome.
    */
-  public name = 'ping';
+  public commandName = 'ping';
 
   /**
    * Descrição.
    */
-  public description = 'A ping-pong command.'.translate();
+  public commandDescription = 'A ping-pong command.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.
    * @param interaction Interação chegada do discord.
    */
   public canRun(interaction: Interaction): boolean {
-    return interaction.isCommand() && interaction.commandName === this.name;
+    return (
+      interaction.isCommand() && interaction.commandName === this.commandName
+    );
   }
 
   /**

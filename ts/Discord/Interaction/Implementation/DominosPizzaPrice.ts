@@ -10,19 +10,21 @@ export class DominosPizzaPrice
   /**
    * Nome.
    */
-  public name = 'pixza';
+  public commandName = 'pixza';
 
   /**
    * Descrição.
    */
-  public description = 'The PIXza exchange rate now.'.translate();
+  public commandDescription = 'The PIXza exchange rate now.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.
    * @param interaction Interação chegada do discord.
    */
   public canRun(interaction: Interaction): boolean {
-    return interaction.isCommand() && interaction.commandName === this.name;
+    return (
+      interaction.isCommand() && interaction.commandName === this.commandName
+    );
   }
 
   /**
