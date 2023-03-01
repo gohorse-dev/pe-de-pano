@@ -18,7 +18,7 @@ import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 
 /**
- * Responsável pela gerência da comunicação com o Message.
+ * Responsável pela gerência da comunicação com o Discord.
  */
 export class ConnectionManager {
   /**

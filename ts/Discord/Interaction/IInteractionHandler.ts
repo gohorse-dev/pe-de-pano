@@ -1,7 +1,7 @@
 import { CommandInteraction } from 'discord.js';
 
 /**
- * Representa um tratamento de interação com o Message.
+ * Representa um tratamento de interação com o Discord.
  */
 export interface IInteractionHandler {
   /**

@@ -3,7 +3,7 @@ import { CommandInteraction } from 'discord.js';
 import { InteractionHandlerConfiguration } from './InteractionHandlerConfiguration';
 
 /**
- * Representa um tratamento de interação com o Message.
+ * Representa um tratamento de interação com o Discord.
  */
 export abstract class InteractionHandler implements IInteractionHandler {
   /**

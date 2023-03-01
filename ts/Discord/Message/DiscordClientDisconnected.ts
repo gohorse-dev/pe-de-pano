@@ -7,7 +7,7 @@ import { Client } from 'discord.js';
 export class DiscordClientDisconnected extends Message {
   /**
    * Construtor.
-   * @param client Cliente de comunicação com o Message.
+   * @param client Cliente de comunicação com o Discord.
    */
   constructor(public readonly client: Client) {
     super();

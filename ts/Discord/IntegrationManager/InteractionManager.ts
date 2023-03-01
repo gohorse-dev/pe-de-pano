@@ -5,7 +5,7 @@ import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected'
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 
 /**
- * Responsável pelas interações com o Message.
+ * Responsável pelas interações com o Discord.
  */
 export class InteractionManager {
   /**

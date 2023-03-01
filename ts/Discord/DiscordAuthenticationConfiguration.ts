@@ -1,7 +1,7 @@
 import { JsonLoader } from '@sergiocabral/helper';
 
 /**
- * Configurações para integração com o Message.
+ * Configurações para integração com o Discord.
  */
 export class DiscordAuthenticationConfiguration extends JsonLoader {
   /**

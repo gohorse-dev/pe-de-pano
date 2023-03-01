@@ -197,7 +197,7 @@ export class CommandInteractionManager {
   }
 
   /**
-   * Cria uma instância REST para comunicação com o Message.
+   * Cria uma instância REST para comunicação com o Discord.
    */
   private createRest(): REST {
     return new REST({ version: '10' }).setToken(
