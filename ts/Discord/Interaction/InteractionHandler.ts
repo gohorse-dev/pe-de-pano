@@ -1,16 +1,18 @@
-import { ICommand } from './ICommand';
+import { IInteractionHandler } from './IInteractionHandler';
 import { CommandInteraction } from 'discord.js';
-import { CommandConfiguration } from './CommandConfiguration';
+import { InteractionHandlerConfiguration } from './InteractionHandlerConfiguration';
 
 /**
- * Representa um comando do Discord
+ * Representa um tratamento de interação com o Message.
  */
-export abstract class Command implements ICommand {
+export abstract class InteractionHandler implements IInteractionHandler {
   /**
    * Construtor.
    * @param configuration Configurações usadas na construção de um comando.
    */
-  public constructor(protected readonly configuration: CommandConfiguration) {}
+  public constructor(
+    protected readonly configuration: InteractionHandlerConfiguration
+  ) {}
 
   /**
    * Nome.

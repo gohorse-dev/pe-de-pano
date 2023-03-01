@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
-import { DiscordBotApp } from './App/DiscordApp/DiscordBotApp';
-import { DiscordBotAppConfiguration } from './App/DiscordApp/DiscordBotAppConfiguration';
+import { BotApp } from './App/BotApp';
+import { BotAppConfiguration } from './App/BotAppConfiguration';
 import { ApplicationParameters } from '@gohorse/npm-application';
 
 const commandLine = process.argv.join(' ');
@@ -11,7 +11,7 @@ if (
   commandLine.includes('ts-node') ||
   regexHasIndexFile.test(commandLine)
 ) {
-  void new DiscordBotApp().run();
+  void new BotApp().run();
 }
 
-export { DiscordBotApp, DiscordBotAppConfiguration };
+export { BotApp, BotAppConfiguration };

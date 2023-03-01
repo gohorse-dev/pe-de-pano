@@ -1,9 +1,9 @@
 import { ApplicationParameters } from '@gohorse/npm-application';
 
 /**
- * Configurações usadas na construção de um comando.
+ * Configurações usadas na construção de uma interação com o Message.
  */
-export type CommandConfiguration = {
+export type InteractionHandlerConfiguration = {
   /**
    * Parâmetros da aplicação.
    */

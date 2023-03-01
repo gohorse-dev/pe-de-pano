@@ -1,8 +1,8 @@
-import { Command } from '../Command';
+import { InteractionHandler } from '../InteractionHandler';
 import { CommandInteraction } from 'discord.js';
-import { GetDominosPizzaPrice } from '../../Message/DominosPizza/GetDominosPizzaPrice';
+import { GetDominosPizzaPrice } from '../../../Service/DominosPizza/Message/GetDominosPizzaPrice';
 
-export class DominosPizzaPrice extends Command {
+export class DominosPizzaPrice extends InteractionHandler {
   /**
    * Nome.
    */

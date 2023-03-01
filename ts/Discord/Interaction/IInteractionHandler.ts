@@ -1,9 +1,9 @@
 import { CommandInteraction } from 'discord.js';
 
 /**
- * Representa um comando do Discord.
+ * Representa um tratamento de interação com o Message.
  */
-export interface ICommand {
+export interface IInteractionHandler {
   /**
    * Nome.
    */

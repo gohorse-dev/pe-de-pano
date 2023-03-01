@@ -1,11 +1,11 @@
 import { Logger, LogLevel, Message } from '@sergiocabral/helper';
-import { DiscordClientConnected } from '../Message/Discord/DiscordClientConnected';
+import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { Events, Interaction } from 'discord.js';
-import { DiscordClientDisconnected } from '../Message/Discord/DiscordClientDisconnected';
-import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
+import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
+import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 
 /**
- * Responsável pelas interações com o Discord.
+ * Responsável pelas interações com o Message.
  */
 export class InteractionManager {
   /**
@@ -55,7 +55,7 @@ export class InteractionManager {
    */
   private async dispatchInteraction(interaction: Interaction): Promise<void> {
     Logger.post(
-      'Received Discord interaction with id "{interactionId}".',
+      'Received Message interaction with id "{interactionId}".',
       {
         interactionId: interaction.id
       },

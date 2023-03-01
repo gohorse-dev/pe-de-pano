@@ -1,15 +1,15 @@
-import { MarketDataResult } from '../../Model/DominosPizza/MarketDataResult';
+import { MarketDataResult } from './Model/MarketDataResult';
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
-import { GetDominosPizzaPrice } from '../../Message/DominosPizza/GetDominosPizzaPrice';
+import { GetDominosPizzaPrice } from './Message/GetDominosPizzaPrice';
 
 /**
  * Serviços envolvendo a Dominos Pizza
  */
-export class DominosPizza {
+export class DominosPizzaService {
   /**
    * Contexto de log.
    */
-  private static logContext = 'DominosPizza';
+  private static logContext = 'DominosPizzaService';
 
   /**
    * Construtor.
@@ -33,7 +33,7 @@ export class DominosPizza {
         "No data received from the Domino's Pizza API for the price of the pizza.",
         undefined,
         LogLevel.Warning,
-        DominosPizza.logContext
+        DominosPizzaService.logContext
       );
 
       return;
@@ -61,7 +61,7 @@ export class DominosPizza {
       "Unable to extract price of Domino's Pizza API.",
       undefined,
       LogLevel.Warning,
-      DominosPizza.logContext
+      DominosPizzaService.logContext
     );
   }
 
@@ -74,7 +74,7 @@ export class DominosPizza {
         url
       },
       LogLevel.Verbose,
-      DominosPizza.logContext
+      DominosPizzaService.logContext
     );
 
     const response = await fetch(url);
@@ -88,7 +88,7 @@ export class DominosPizza {
         "The return from the Domino's Pizza API did not return as expected.",
         undefined,
         LogLevel.Error,
-        DominosPizza.logContext
+        DominosPizzaService.logContext
       );
 
       return undefined;
@@ -103,7 +103,7 @@ export class DominosPizza {
           lengthBytes: jsonAsText.length
         },
         LogLevel.Verbose,
-        DominosPizza.logContext
+        DominosPizzaService.logContext
       );
 
       return json;
@@ -115,7 +115,7 @@ export class DominosPizza {
           error
         },
         LogLevel.Error,
-        DominosPizza.logContext
+        DominosPizzaService.logContext
       );
 
       return undefined;

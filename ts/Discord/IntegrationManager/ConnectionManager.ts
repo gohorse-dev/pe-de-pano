@@ -5,8 +5,8 @@ import {
   LogLevel,
   Message
 } from '@sergiocabral/helper';
-import { IntegrationConfiguration } from './IntegrationConfiguration';
-import { ApplicationReady } from '../Message/Application/ApplicationReady';
+import { DiscordAuthenticationConfiguration } from '../DiscordAuthenticationConfiguration';
+import { ApplicationReady } from '../../App/Message/ApplicationReady';
 import {
   ApplicationTerminated,
   ConfigurationReloaded,
@@ -14,24 +14,24 @@ import {
 } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { Client, IntentsBitField } from 'discord.js';
-import { DiscordClientConnected } from '../Message/Discord/DiscordClientConnected';
-import { DiscordClientDisconnected } from '../Message/Discord/DiscordClientDisconnected';
+import { DiscordClientConnected } from '../Message/DiscordClientConnected';
+import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 
 /**
- * Responsável pela gerência da comunicação com o Discord.
+ * Responsável pela gerência da comunicação com o Message.
  */
-export class ServerManager {
+export class ConnectionManager {
   /**
    * Contexto do log.
    */
-  private static logContext = 'ServerManager';
+  private static logContext = 'ConnectionManager';
 
   /**
    * Construtor.
    * @param getConfiguration Configurações.
    */
   public constructor(
-    private readonly getConfiguration: () => IntegrationConfiguration
+    private readonly getConfiguration: () => DiscordAuthenticationConfiguration
   ) {
     this.configuration = getConfiguration();
     this.client = this.createClient();
@@ -47,10 +47,10 @@ export class ServerManager {
     );
   }
 
-  private configuration: IntegrationConfiguration;
+  private configuration: DiscordAuthenticationConfiguration;
 
   /**
-   * Cliente para o Discord.
+   * Cliente para o Message.
    */
   private client: Client;
 
@@ -93,7 +93,7 @@ export class ServerManager {
   }
 
   /**
-   * Cria uma instância do client para o Discord.
+   * Cria uma instância do client para o Message.
    */
   private createClient(): Client {
     return new Client({ intents: [IntentsBitField.Flags.Guilds] });
@@ -114,7 +114,7 @@ export class ServerManager {
         'Logging on through the client.',
         undefined,
         LogLevel.Verbose,
-        ServerManager.logContext
+        ConnectionManager.logContext
       );
 
       const result = await client.login(this.configuration.applicationToken);
@@ -125,14 +125,14 @@ export class ServerManager {
           'Login successful. Waiting to be ready.',
           undefined,
           LogLevel.Verbose,
-          ServerManager.logContext
+          ConnectionManager.logContext
         );
       } else {
         Logger.post(
           'Login seems to have been successfully performed, but the return was not as expected.  Waiting to be ready.',
           undefined,
           LogLevel.Verbose,
-          ServerManager.logContext
+          ConnectionManager.logContext
         );
       }
     } catch (error) {
@@ -143,7 +143,7 @@ export class ServerManager {
           error
         },
         LogLevel.Error,
-        ServerManager.logContext
+        ConnectionManager.logContext
       );
 
       return false;
@@ -165,7 +165,7 @@ export class ServerManager {
           'Login completed successfully.',
           undefined,
           LogLevel.Information,
-          ServerManager.logContext
+          ConnectionManager.logContext
         );
 
         client.off('ready', onReady);
@@ -191,7 +191,7 @@ export class ServerManager {
           'Login did not result in a ready state.',
           undefined,
           LogLevel.Error,
-          ServerManager.logContext
+          ConnectionManager.logContext
         );
 
         client.off('ready', onReady);
@@ -220,7 +220,7 @@ export class ServerManager {
         'Dropped client with discord to log off.',
         undefined,
         LogLevel.Information,
-        ServerManager.logContext
+        ConnectionManager.logContext
       );
 
       resolve(true);

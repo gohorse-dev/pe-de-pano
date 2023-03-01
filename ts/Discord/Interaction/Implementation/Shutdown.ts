@@ -1,4 +1,4 @@
-import { Command } from '../Command';
+import { InteractionHandler } from '../InteractionHandler';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -10,7 +10,7 @@ import { TerminateApplication } from '@gohorse/npm-core';
 /**
  * Desliga o bot como aplição em execução no sistema operacional.
  */
-export class Shutdown extends Command {
+export class Shutdown extends InteractionHandler {
   /**
    * Nome.
    */

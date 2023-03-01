@@ -1,25 +1,25 @@
-import { Command } from '../Command';
+import { InteractionHandler } from '../InteractionHandler';
 import { CommandInteraction } from 'discord.js';
 
 /**
- * Um comando para ping-pong que responde com hello-world
+ * Um comando para ping-pong.
  */
-export class Hello extends Command {
+export class Ping extends InteractionHandler {
   /**
    * Nome.
    */
-  public override name = 'hello';
+  public override name = 'ping';
 
   /**
    * Descrição.
    */
-  public description = 'A Hello World command.'.translate();
+  public description = 'A ping-pong command.'.translate();
 
   /**
    * Executa o comando.
    * @param interaction Interação chegada do discord.
    */
   public override async run(interaction: CommandInteraction): Promise<void> {
-    await interaction.reply('world');
+    await interaction.reply('pong');
   }
 }

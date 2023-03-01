@@ -1,17 +1,17 @@
-import { DiscordBotAppConfiguration } from './DiscordBotAppConfiguration';
+import { BotAppConfiguration } from './BotAppConfiguration';
 import { Logger, LogLevel, Translate } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
-import { CommandManager } from '../../DiscordIntegration/CommandManager';
-import { ApplicationReady } from '../../Message/Application/ApplicationReady';
-import { ServerManager } from '../../DiscordIntegration/ServerManager';
-import { InteractionManager } from '../../DiscordIntegration/InteractionManager';
-import { DominosPizza } from '../../Service/DominosPizza/DominosPizza';
+import { ApplicationReady } from './Message/ApplicationReady';
+import { ConnectionManager } from '../Discord/IntegrationManager/ConnectionManager';
+import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
+import { CommandInteractionManager } from '../Discord/IntegrationManager/CommandInteractionManager';
+import { InteractionManager } from '../Discord/IntegrationManager/InteractionManager';
 
 /**
  * Aplicação vazia de exemplo.
  */
-export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
+export class BotApp extends Application<BotAppConfiguration> {
   /**
    * Contexto do log.
    */
@@ -20,7 +20,7 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
   /**
    * Tipo da Configurações da aplicação;
    */
-  protected override configurationConstructor = DiscordBotAppConfiguration;
+  protected override configurationConstructor = BotAppConfiguration;
 
   /**
    * Sinaliza que a aplicação deve finalizar.
@@ -32,17 +32,20 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
    */
   protected override async onStart(): Promise<void> {
     Logger.post(
-      'Application started.',
+      'Message started.',
       undefined,
       LogLevel.Information,
-      DiscordBotApp.logContext
+      BotApp.logContext
     );
 
     Translate.default.selectedLanguage = 'pt-BR';
 
-    void new DominosPizza();
-    void new CommandManager(() => this.configuration.discord, this.parameters);
-    void new ServerManager(() => this.configuration.discord);
+    void new DominosPizzaService();
+    void new CommandInteractionManager(
+      () => this.configuration.discord,
+      this.parameters
+    );
+    void new ConnectionManager(() => this.configuration.discord);
     void new InteractionManager();
 
     await new ApplicationReady().sendAsync();
@@ -71,7 +74,7 @@ export class DiscordBotApp extends Application<DiscordBotAppConfiguration> {
       'Closing application.',
       undefined,
       LogLevel.Information,
-      DiscordBotApp.logContext
+      BotApp.logContext
     );
   }
 }

@@ -2,12 +2,12 @@ import { Message } from '@sergiocabral/helper';
 import { Interaction } from 'discord.js';
 
 /**
- * Interação do Discord recebida.
+ * Interação do Message recebida.
  */
 export class DiscordInteractionReceived extends Message {
   /**
    * Construtor.
-   * @param interaction Interação do Discord.
+   * @param interaction Interação do Message.
    */
   constructor(public readonly interaction: Interaction) {
     super();

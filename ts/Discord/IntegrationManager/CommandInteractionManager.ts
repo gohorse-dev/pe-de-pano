@@ -5,38 +5,38 @@ import {
   LogLevel,
   Message
 } from '@sergiocabral/helper';
-import { RegisterCommandOnDiscord } from '../Message/Discord/RegisterCommandOnDiscord';
-import { IntegrationConfiguration } from './IntegrationConfiguration';
-import { ApplicationReady } from '../Message/Application/ApplicationReady';
+import { RegisterCommandOnDiscord } from '../Message/RegisterCommandOnDiscord';
+import { DiscordAuthenticationConfiguration } from '../DiscordAuthenticationConfiguration';
+import { ApplicationReady } from '../../App/Message/ApplicationReady';
 import { ConfigurationReloaded } from '@gohorse/npm-core';
 import {
   ApplicationConfiguration,
   ApplicationParameters
 } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
-import { ICommand } from '../Commands/ICommand';
-import { Ping } from '../Commands/Implementation/Ping';
-import { Hello } from '../Commands/Implementation/Hello';
-import { ApplicationCommandsResult } from '../Model/Discord/ApplicationCommandsResult';
-import { DiscordInteractionReceived } from '../Message/Discord/DiscordInteractionReceived';
-import { DominosPizzaPrice } from '../Commands/Implementation/DominosPizzaPrice';
-import { CommandConfiguration } from '../Commands/CommandConfiguration';
-import { Shutdown } from '../Commands/Implementation/Shutdown';
+import { IInteractionHandler } from '../Interaction/IInteractionHandler';
+import { Ping } from '../Interaction/Implementation/Ping';
+import { Hello } from '../Interaction/Implementation/Hello';
+import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
+import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
+import { DominosPizzaPrice } from '../Interaction/Implementation/DominosPizzaPrice';
+import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
+import { Shutdown } from '../Interaction/Implementation/Shutdown';
 
 /**
  * Responsável pela gerência de todos os comandos desse bot.
  */
-export class CommandManager {
+export class CommandInteractionManager {
   /**
    * Contexto do log.
    */
-  private static logContext = 'CommandManager';
+  private static logContext = 'CommandInteractionManager';
 
   /**
    * Lista de todos os construtores possíveis desse bot.
    */
   public static allCommandsConstructors: Array<
-    new (configuration: CommandConfiguration) => ICommand
+    new (configuration: InteractionHandlerConfiguration) => IInteractionHandler
   > = [Ping, Hello, Shutdown, DominosPizzaPrice];
 
   /**
@@ -45,7 +45,7 @@ export class CommandManager {
    * @param applicationParameters Parâmetros da aplição.
    */
   public constructor(
-    private readonly getConfiguration: () => IntegrationConfiguration,
+    private readonly getConfiguration: () => DiscordAuthenticationConfiguration,
     private readonly applicationParameters: ApplicationParameters
   ) {
     this.configuration = getConfiguration();
@@ -66,15 +66,15 @@ export class CommandManager {
     );
   }
 
-  private configuration: IntegrationConfiguration;
+  private configuration: DiscordAuthenticationConfiguration;
 
   /**
    * Lista de comandos.
    */
-  private commands: ICommand[] = [];
+  private commands: IInteractionHandler[] = [];
 
   /**
-   * Comunicador com a API do Discord via REST.
+   * Comunicador com a API do Message via REST.
    */
   private rest: REST;
 
@@ -89,7 +89,7 @@ export class CommandManager {
    * Mensagem: RegisterCommands
    */
   private async handleRegisterCommands(): Promise<void> {
-    this.commands = CommandManager.allCommandsConstructors.map(
+    this.commands = CommandInteractionManager.allCommandsConstructors.map(
       commandConstructor =>
         new commandConstructor({
           applicationParameters: this.applicationParameters
@@ -102,13 +102,13 @@ export class CommandManager {
     }));
 
     Logger.post(
-      'Registering Discord commands. Total: {count}. Names: {commandNameList}',
+      'Registering Message commands. Total: {count}. Names: {commandNameList}',
       () => ({
         count: commands.length,
         commandNameList: commands.map(command => command.name).join(', ')
       }),
       LogLevel.Verbose,
-      CommandManager.logContext
+      CommandInteractionManager.logContext
     );
 
     try {
@@ -122,13 +122,13 @@ export class CommandManager {
       }
 
       Logger.post(
-        'Discord commands registered. Total: {count}. Names: {commandNameList}',
+        'Message commands registered. Total: {count}. Names: {commandNameList}',
         () => ({
           count: response.length,
           commandNameList: response.map(command => command.name).join(', ')
         }),
         LogLevel.Debug,
-        CommandManager.logContext
+        CommandInteractionManager.logContext
       );
     } catch (error) {
       Logger.post(
@@ -139,7 +139,7 @@ export class CommandManager {
           error
         },
         LogLevel.Error,
-        CommandManager.logContext
+        CommandInteractionManager.logContext
       );
     }
   }
@@ -175,7 +175,7 @@ export class CommandManager {
                 commandName: command.name
               },
               LogLevel.Debug,
-              CommandManager.logContext
+              CommandInteractionManager.logContext
             );
 
             await command.run(interaction);
@@ -188,7 +188,7 @@ export class CommandManager {
                 error
               },
               LogLevel.Error,
-              CommandManager.logContext
+              CommandInteractionManager.logContext
             );
           }
         }
@@ -197,7 +197,7 @@ export class CommandManager {
   }
 
   /**
-   * Cria uma instância REST para comunicação com o Discord.
+   * Cria uma instância REST para comunicação com o Message.
    */
   private createRest(): REST {
     return new REST({ version: '10' }).setToken(
