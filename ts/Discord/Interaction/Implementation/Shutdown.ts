@@ -104,7 +104,8 @@ export class Shutdown
 
       await interaction.reply({
         content: 'You intend to kill me, is that it?'.translate(),
-        components: [row]
+        components: [row],
+        ephemeral: true
       });
     }
   }
@@ -124,9 +125,15 @@ export class Shutdown
    */
   private async step2(interaction: ButtonInteraction): Promise<void> {
     if (interaction.customId === this.buttonNoId) {
-      await interaction.reply('Phew! What a fright.'.translate());
+      await interaction.reply({
+        content: 'Phew! What a fright.'.translate(),
+        ephemeral: true
+      });
     } else if (interaction.customId === this.buttonYesId) {
-      await interaction.reply("I'll be back.".translate());
+      await interaction.reply({
+        content: "I'll be back.".translate(),
+        ephemeral: true
+      });
       await new TerminateApplication(
         this.configuration.applicationParameters.id,
         this.configuration.applicationParameters.id
