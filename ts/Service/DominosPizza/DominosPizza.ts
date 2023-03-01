@@ -50,7 +50,8 @@ export class DominosPizza {
         const price = (regexExtractPrice.exec(tile.images.side.alt) ?? [])[0];
 
         if (price !== undefined) {
-          message.price = price;
+          const regexBeforeDigit = /(?=\d)/;
+          message.price = price.replace(regexBeforeDigit, ' ');
           return;
         }
       }
