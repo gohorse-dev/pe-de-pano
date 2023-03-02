@@ -104,7 +104,7 @@ export class IntegrationManager {
     let interactionModule: Record<string, new (...args: unknown[]) => unknown>;
     try {
       Logger.post(
-        'Trying to load Discord API interaction file: {interactionFilePath}',
+        'Trying to load Discord API interaction file: "{interactionFilePath}"',
         {
           interactionFilePath
         },
@@ -118,7 +118,7 @@ export class IntegrationManager {
       >;
 
       Logger.post(
-        'Discord API interaction file loaded successfully: {interactionFilePath}',
+        'Discord API interaction file loaded successfully: "{interactionFilePath}"',
         {
           interactionFilePath
         },
@@ -143,7 +143,7 @@ export class IntegrationManager {
 
     if (typeof interactionClassConstructor !== 'function') {
       Logger.post(
-        'The Discord API interaction class was not found in the corresponding file: {interactionFilePath}',
+        'The Discord API interaction class was not found in the corresponding file: "{interactionFilePath}"',
         {
           interactionFilePath
         },
@@ -162,7 +162,7 @@ export class IntegrationManager {
 
     if (!(interaction instanceof InteractionHandler)) {
       Logger.post(
-        'The type of the Discord API interaction class is incorrect in the corresponding file: {interactionFilePath}',
+        'The type of the Discord API interaction class is incorrect in the corresponding file: "{interactionFilePath}"',
         {
           interactionFilePath
         },
@@ -189,7 +189,7 @@ export class IntegrationManager {
     const interactionBasePath = this.applicationParameters.packageDirectory;
 
     Logger.post(
-      'Recursively looking for Discord API interactions files in directory: {interactionBasePath}',
+      'Recursively looking for Discord API interactions files in directory: "{interactionBasePath}"',
       {
         interactionBasePath
       },
@@ -206,10 +206,11 @@ export class IntegrationManager {
       );
 
       Logger.post(
-        'Discord API interactions files found: {interactionCount}, {interactionList}',
+        'Discord API interactions files found: {interactionCount}, {interactionFileList}',
         () => ({
           interactionCount: files.length,
-          interactionList: files.map(file => `"${file}"`).join(', ')
+          interactionFileList: files.map(file => `"${file}"`).join(', '),
+          interactionList: files
         }),
         LogLevel.Debug,
         IntegrationManager.logContext

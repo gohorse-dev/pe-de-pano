@@ -139,10 +139,10 @@ export class DominosPizzaService {
     } catch (error) {
       Logger.post(
         "The return data from the Domino's Pizza API is not valid JSON: {errorDescription}",
-        {
+        () => ({
           errorDescription: HelperText.formatError(error),
           error
-        },
+        }),
         LogLevel.Error,
         DominosPizzaService.logContext
       );

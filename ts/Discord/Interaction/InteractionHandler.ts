@@ -74,11 +74,11 @@ export abstract class InteractionHandler implements IInteractionHandler {
     } catch (error) {
       Logger.post(
         'Error executing interaction "{interactionName}": {errorDescription}',
-        {
+        () => ({
           interactionName: this.constructor.name,
           errorDescription: HelperText.formatError(error),
           error
-        },
+        }),
         LogLevel.Error,
         InteractionHandler.logContext2
       );

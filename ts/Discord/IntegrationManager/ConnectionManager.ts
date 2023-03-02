@@ -145,10 +145,10 @@ export class ConnectionManager {
     } catch (error) {
       Logger.post(
         'Error during login via client: {errorDescription}',
-        {
+        () => ({
           errorDescription: HelperText.formatError(error),
           error
-        },
+        }),
         LogLevel.Error,
         ConnectionManager.logContext
       );
