@@ -1,5 +1,11 @@
 import { MarketDataResult } from './Model/MarketDataResult';
-import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
+import {
+  HelperText,
+  InvalidDataError,
+  Logger,
+  LogLevel,
+  Message
+} from '@sergiocabral/helper';
 import { GetDominosPizzaPrice } from './Message/GetDominosPizzaPrice';
 
 /**
@@ -15,6 +21,13 @@ export class DominosPizzaService {
    * Construtor.
    */
   public constructor() {
+    this.subscribeToMessages();
+  }
+
+  /**
+   * Se inscreve nas mensagens de interesse.
+   */
+  private subscribeToMessages(): void {
     Message.subscribe(
       GetDominosPizzaPrice,
       this.handleGetDominosPizzaPrice.bind(this)
@@ -27,45 +40,59 @@ export class DominosPizzaService {
   private async handleGetDominosPizzaPrice(
     message: GetDominosPizzaPrice
   ): Promise<void> {
-    const dominosData = await this.getMarketData();
-    if (dominosData?.homeTiles?.tiles === undefined) {
+    try {
+      message.price = await this.getPizzaPrice();
+    } catch (error) {
       Logger.post(
-        "No data received from the Domino's Pizza API for the price of the pizza.",
+        "The price of Domino's Pizza could not be delivered as a result in the message.",
         undefined,
         LogLevel.Warning,
         DominosPizzaService.logContext
       );
-
-      return;
     }
+  }
 
-    const regexExtractPrice = /R\$\s*?\d+[,.]\d{2}/;
+  /**
+   * Retorna o preço da pizza.
+   */
+  private async getPizzaPrice(): Promise<string> {
+    const dominosData = await this.getMarketData();
 
-    for (const entry of Object.entries(dominosData.homeTiles.tiles)) {
-      const tile = entry[1];
-      if (
-        tile?.linkCode === 'BYOM' &&
-        typeof tile?.images?.side?.alt === 'string'
-      ) {
-        const price = (regexExtractPrice.exec(tile.images.side.alt) ?? [])[0];
+    if (dominosData.homeTiles?.tiles !== undefined) {
+      const regexExtractPrice = /R\$\s*?\d+[,.]\d{2}/;
 
-        if (price !== undefined) {
-          const regexBeforeDigit = /(?=\d)/;
-          message.price = price.replace(regexBeforeDigit, ' ');
-          return;
+      for (const entry of Object.entries(dominosData.homeTiles.tiles)) {
+        const tile = entry[1];
+        if (
+          tile?.linkCode === 'BYOM' &&
+          typeof tile?.images?.side?.alt === 'string'
+        ) {
+          const price = (regexExtractPrice.exec(tile.images.side.alt) ?? [])[0];
+
+          if (price !== undefined) {
+            const regexBeforeDigit = /(?=\d)/;
+            return price.replace(regexBeforeDigit, ' ');
+          }
         }
       }
     }
 
     Logger.post(
-      "Unable to extract price of Domino's Pizza API.",
-      undefined,
-      LogLevel.Warning,
+      "Unable to extract price of Domino's Pizza API. Original content: {content}",
+      { content: JSON.stringify(dominosData) },
+      LogLevel.Error,
       DominosPizzaService.logContext
+    );
+
+    throw new InvalidDataError(
+      "No data received from the Domino's Pizza API for the price of the pizza."
     );
   }
 
-  private async getMarketData(): Promise<MarketDataResult | undefined> {
+  /**
+   * Retorna os dados da API da Domino's Pizza.
+   */
+  private async getMarketData(): Promise<MarketDataResult> {
     const url = 'https://cache.dominos.com/wam/prod/market/BR/_pt/dpz.wam.js';
 
     Logger.post(
@@ -85,13 +112,15 @@ export class DominosPizzaService {
 
     if (jsonAsText === undefined) {
       Logger.post(
-        "The return from the Domino's Pizza API did not return as expected.",
-        undefined,
+        "The return from the Domino's Pizza API did not return as expected: {content}",
+        { content },
         LogLevel.Error,
         DominosPizzaService.logContext
       );
 
-      return undefined;
+      throw new InvalidDataError(
+        "The return from the Domino's Pizza API did not return as expected."
+      );
     }
 
     try {
@@ -118,7 +147,7 @@ export class DominosPizzaService {
         DominosPizzaService.logContext
       );
 
-      return undefined;
+      throw error;
     }
   }
 }
