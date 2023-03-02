@@ -25,6 +25,6 @@ module.exports = {
         "import"
     ],
     "rules": {
-        "@typescript-eslint/no-misused-promises": 1
+        "@typescript-eslint/no-throw-literal": 0
     }
 };
