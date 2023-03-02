@@ -1,11 +1,11 @@
-import { InteractionHandler } from '../InteractionHandler';
+import { InteractionHandler } from '../../InteractionHandler';
 import { Interaction } from 'discord.js';
-import { ICommandInteractionHandler } from '../ICommandInteractionHandler';
+import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
 
 /**
  * Um comando para ping-pong que responde com hello-world
  */
-export class Hello
+export class HelloInteraction
   extends InteractionHandler
   implements ICommandInteractionHandler
 {
@@ -17,7 +17,7 @@ export class Hello
   /**
    * Descrição.
    */
-  public commandDescription = 'A Hello World command.'.translate();
+  public commandDescription = 'A HelloInteraction World command.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.

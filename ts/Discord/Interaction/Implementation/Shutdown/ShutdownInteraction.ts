@@ -1,4 +1,4 @@
-import { InteractionHandler } from '../InteractionHandler';
+import { InteractionHandler } from '../../InteractionHandler';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -10,13 +10,13 @@ import {
   UserContextMenuCommandInteraction
 } from 'discord.js';
 import { TerminateApplication } from '@gohorse/npm-core';
-import { ICommandInteractionHandler } from '../ICommandInteractionHandler';
+import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
 import { NotImplementedError } from '@sergiocabral/helper';
 
 /**
  * Desliga o bot como aplição em execução no sistema operacional.
  */
-export class Shutdown
+export class ShutdownInteraction
   extends InteractionHandler
   implements ICommandInteractionHandler
 {

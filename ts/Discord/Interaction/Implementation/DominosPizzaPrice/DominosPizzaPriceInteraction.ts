@@ -1,23 +1,21 @@
-import { InteractionHandler } from '../InteractionHandler';
+import { InteractionHandler } from '../../InteractionHandler';
 import { Interaction } from 'discord.js';
-import { ICommandInteractionHandler } from '../ICommandInteractionHandler';
+import { GetDominosPizzaPrice } from '../../../../Service/DominosPizza/Message/GetDominosPizzaPrice';
+import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
 
-/**
- * Um comando para ping-pong.
- */
-export class Ping
+export class DominosPizzaPriceInteraction
   extends InteractionHandler
   implements ICommandInteractionHandler
 {
   /**
    * Nome.
    */
-  public commandName = 'ping';
+  public commandName = 'pixza';
 
   /**
    * Descrição.
    */
-  public commandDescription = 'A ping-pong command.'.translate();
+  public commandDescription = 'The PIXza exchange rate now.'.translate();
 
   /**
    * Verifica se é uma interação possível de ser executada.
@@ -38,6 +36,9 @@ export class Ping
       return;
     }
 
-    await interaction.reply('pong');
+    const price = (await new GetDominosPizzaPrice().sendAsync()).message.price;
+    await interaction.reply(
+      `Hoje a cotação da PiXza está em ${price ?? 'sei lá quanto'}.`
+    );
   }
 }
