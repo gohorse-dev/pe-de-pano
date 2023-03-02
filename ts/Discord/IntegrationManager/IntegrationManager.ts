@@ -43,6 +43,10 @@ export class IntegrationManager {
    */
   private subscribeToMessages(): void {
     Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
+    Message.subscribe(
+      DiscordInteractionReceived,
+      this.handleDiscordInteractionReceived.bind(this)
+    );
   }
 
   /**
@@ -50,6 +54,60 @@ export class IntegrationManager {
    */
   private async handleApplicationReady(): Promise<void> {
     await this.loadInteractions();
+  }
+
+  /**
+   * Mensagem: DiscordInteractionReceived
+   */
+  private async handleDiscordInteractionReceived(
+    message: DiscordInteractionReceived
+  ): Promise<void> {
+    const discordInteraction = message.interaction;
+    const interactions = this.interactions.filter(interaction =>
+      interaction.canHandle(discordInteraction)
+    );
+
+    if (interactions.length > 0) {
+      Logger.post(
+        'Discord interaction message with id "{interactionId}" will be handled by: {interactionNameList}',
+        {
+          interactionId: discordInteraction.id,
+          interactionNameList: interactions.map(
+            interaction => interaction.constructor.name
+          )
+        },
+        LogLevel.Verbose,
+        IntegrationManager.logContext
+      );
+
+      for (const interaction of interactions) {
+        try {
+          await interaction.handle(message.interaction);
+
+          Logger.post(
+            'Discord interaction message with id "{interactionId}" was successfully handled by "{interactionName}".',
+            {
+              interactionId: discordInteraction.id,
+              interactionName: interaction.constructor.name
+            },
+            LogLevel.Debug,
+            IntegrationManager.logContext
+          );
+        } catch (error) {
+          Logger.post(
+            'An error occurred while handling a Discord interaction message with id "{interactionId}" by "{interactionName}": {errorDescription}',
+            () => ({
+              interactionId: discordInteraction.id,
+              interactionName: interaction.constructor.name,
+              errorDescription: HelperText.formatError(error),
+              error
+            }),
+            LogLevel.Error,
+            IntegrationManager.logContext
+          );
+        }
+      }
+    }
   }
 
   /**
