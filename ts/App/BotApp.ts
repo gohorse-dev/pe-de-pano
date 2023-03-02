@@ -5,6 +5,7 @@ import { Application } from '@gohorse/npm-application';
 import { ApplicationReady } from './Message/ApplicationReady';
 import { ConnectionManager } from '../Discord/IntegrationManager/ConnectionManager';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
+import { IntegrationManager } from '../Discord/IntegrationManager/IntegrationManager';
 
 /**
  * Aplicação vazia de exemplo.
@@ -71,5 +72,6 @@ export class BotApp extends Application<BotAppConfiguration> {
   private createModules(): void {
     void new DominosPizzaService();
     void new ConnectionManager(() => this.configuration.discord);
+    void new IntegrationManager(this.parameters);
   }
 }
