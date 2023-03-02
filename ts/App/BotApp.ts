@@ -1,12 +1,10 @@
 import { BotAppConfiguration } from './BotAppConfiguration';
-import { Logger, LogLevel, Translate } from '@sergiocabral/helper';
+import { Logger, LogLevel } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
 import { ApplicationReady } from './Message/ApplicationReady';
 import { ConnectionManager } from '../Discord/IntegrationManager/ConnectionManager';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
-import { CommandInteractionManager } from '../Discord/IntegrationManager/CommandInteractionManager';
-import { InteractionManager } from '../Discord/IntegrationManager/InteractionManager';
 
 /**
  * Aplicação vazia de exemplo.
@@ -32,18 +30,13 @@ export class BotApp extends Application<BotAppConfiguration> {
    */
   protected override async onStart(): Promise<void> {
     Logger.post(
-      'Message started.',
+      'Application started.',
       undefined,
       LogLevel.Information,
       BotApp.logContext
     );
 
-    Translate.default.selectedLanguage = 'pt-BR';
-
-    void new DominosPizzaService();
-    void new CommandInteractionManager(() => this.configuration.discord);
-    void new ConnectionManager(() => this.configuration.discord);
-    void new InteractionManager(this.parameters);
+    this.createModules();
 
     await new ApplicationReady().sendAsync();
 
@@ -70,5 +63,13 @@ export class BotApp extends Application<BotAppConfiguration> {
       LogLevel.Information,
       BotApp.logContext
     );
+  }
+
+  /**
+   * Cria os módulos do sistema.
+   */
+  private createModules(): void {
+    void new DominosPizzaService();
+    void new ConnectionManager(() => this.configuration.discord);
   }
 }
