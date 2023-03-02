@@ -10,7 +10,6 @@ import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 export abstract class InteractionHandler implements IInteractionHandler {
   /**
    * Contexto de log.
-   * @private
    */
   private static logContext2 = 'InteractionHandler';
 

@@ -19,7 +19,6 @@ import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandl
 export class IntegrationManager {
   /**
    * Contexto de log.
-   * @private
    */
   private static logContext = 'IntegrationManager';
 
