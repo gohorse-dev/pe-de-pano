@@ -1,10 +1,18 @@
 import { ApplicationParameters } from '@gohorse/npm-application';
-import { InvalidExecutionError, Message } from '@sergiocabral/helper';
+import {
+  HelperFileSystem,
+  HelperText,
+  InvalidExecutionError,
+  Message,
+  ShouldNeverHappenError
+} from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import * as fs from 'node:fs';
-import path from 'node:path';
-import { InteractionHandlerConstructor } from '../Interaction/InteractionHandler';
+import {
+  InteractionHandler,
+  InteractionHandlerConstructor
+} from '../Interaction/InteractionHandler';
 import { IInteractionHandler } from '../Interaction/IInteractionHandler';
+import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
 
 /**
  * Responsável pela gerência das interações com o Discord.
@@ -39,6 +47,8 @@ export class IntegrationManager {
     await this.loadInteractions();
   }
 
+  // TODO: Incluir logs.
+
   /**
    * Carrega todas as interações.
    */
@@ -47,44 +57,70 @@ export class IntegrationManager {
       throw new InvalidExecutionError('Interactions already loaded.');
     }
 
-    const pathOfInteractions = path.join(
-      __dirname,
-      '..',
-      'Interaction',
-      'Implementation'
-    );
-    const allfiles = fs.readdirSync(pathOfInteractions);
-    const javascriptFiles = allfiles.filter(file => file.endsWith('.js'));
-    const typescriptFiles =
-      javascriptFiles.length === 0
-        ? allfiles.filter(file => file.endsWith('.ts'))
-        : [];
-    const interactionFiles =
-      javascriptFiles.length > 0 ? javascriptFiles : typescriptFiles;
+    for (const interactionFile of this.getInteractionFiles()) {
+      const interaction = await this.loadInteraction(interactionFile);
+      if (interaction !== undefined) {
+        this.interactions.push(interaction);
+      }
+    }
 
-    for (const interactionFile of interactionFiles) {
-      const interactionFilePath = path.join(
-        pathOfInteractions,
-        interactionFile
-      );
-      const interactionModule = (await import(interactionFilePath)) as Record<
-        string,
-        unknown
-      >;
-      const interactionClassConstructor = Object.values(
-        interactionModule
-      )[0] as InteractionHandlerConstructor;
-      this.interactions.push(
-        new interactionClassConstructor({
-          applicationParameters: this.applicationParameters
-        })
+    return this.interactions.length;
+  }
+
+  /**
+   * Carrega uma interação.
+   * @param interactionFilePath Caminho do arquivo do código-fonte da interação.
+   */
+  private async loadInteraction(
+    interactionFilePath: string
+  ): Promise<InteractionHandler | undefined> {
+    const regexInteractionName = /[^\\/]+(?=\.[^.]+)/;
+    const interactionName = (interactionFilePath.match(regexInteractionName) ??
+      [])[0];
+
+    if (interactionName === undefined) {
+      throw new ShouldNeverHappenError(
+        'Invalid RegExp to extract file name without extnesion.'
       );
     }
 
-    // TODO: Incluir logs.
+    let interactionModule: Record<string, InteractionHandlerConstructor>;
+    try {
+      interactionModule = (await import(interactionFilePath)) as Record<
+        string,
+        InteractionHandlerConstructor
+      >;
+    } catch (error) {
+      return undefined;
+    }
 
-    console.log(this.interactions);
+    const interactionClassConstructor = interactionModule[interactionName];
 
-    return this.interactions.length;
+    if (typeof interactionClassConstructor !== 'function') {
+      return undefined;
+    }
+
+    const configuration: InteractionHandlerConfiguration = {
+      applicationParameters: this.applicationParameters
+    };
+
+    return new interactionClassConstructor(configuration);
+  }
+
+  /**
+   * Retorna a lista de arquivos das interações.
+   */
+  private getInteractionFiles(): string[] {
+    const regexFileExtension = /\.[^.]+$/;
+    const extension = (__filename.match(regexFileExtension) ?? [''])[0];
+    const regexInteractionFiles = new RegExp(
+      '.+' + HelperText.escapeRegExp('Interaction' + extension) + '$'
+    );
+    return HelperFileSystem.findFilesInto(
+      this.applicationParameters.packageDirectory,
+      regexInteractionFiles,
+      undefined,
+      'node_modules'
+    );
   }
 }
