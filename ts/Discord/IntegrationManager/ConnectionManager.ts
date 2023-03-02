@@ -35,16 +35,7 @@ export class ConnectionManager {
   ) {
     this.configuration = getConfiguration();
     this.client = this.createClient();
-
-    Message.subscribe(
-      ConfigurationReloaded,
-      this.handleConfigurationReloaded.bind(this)
-    );
-    Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
-    Message.subscribe(
-      ApplicationTerminated,
-      this.handleApplicationTerminated.bind(this)
-    );
+    this.subscribeToMessages();
   }
 
   private configuration: DiscordAuthenticationConfiguration;
@@ -59,6 +50,21 @@ export class ConnectionManager {
    */
   public get isLogged(): boolean {
     return this.client.isReady();
+  }
+
+  /**
+   * Se inscreve nas mensagens de interesse.
+   */
+  private subscribeToMessages(): void {
+    Message.subscribe(
+      ConfigurationReloaded,
+      this.handleConfigurationReloaded.bind(this)
+    );
+    Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
+    Message.subscribe(
+      ApplicationTerminated,
+      this.handleApplicationTerminated.bind(this)
+    );
   }
 
   /**
@@ -85,6 +91,7 @@ export class ConnectionManager {
       this.getConfiguration
     );
     if (configuration !== undefined) {
+      this.configuration = configuration;
       if (this.isLogged) {
         await this.logout();
         await this.login();
@@ -103,11 +110,9 @@ export class ConnectionManager {
    * Realiza o login via o client.
    */
   private async login(): Promise<boolean> {
-    let client = this.client;
-    if (client.isReady()) {
-      throw new InvalidExecutionError('The client is already logged in.');
+    if (this.isLogged) {
+      return false;
     }
-    client = this.client;
 
     try {
       Logger.post(
@@ -117,7 +122,9 @@ export class ConnectionManager {
         ConnectionManager.logContext
       );
 
-      const result = await client.login(this.configuration.applicationToken);
+      const result = await this.client.login(
+        this.configuration.applicationToken
+      );
       const success = result === this.configuration.applicationToken;
 
       if (success) {
@@ -129,7 +136,7 @@ export class ConnectionManager {
         );
       } else {
         Logger.post(
-          'Login seems to have been successfully performed, but the return was not as expected.  Waiting to be ready.',
+          'Login seems to have been successfully performed, but the return was not as expected. Waiting to be ready.',
           undefined,
           LogLevel.Verbose,
           ConnectionManager.logContext
@@ -155,7 +162,7 @@ export class ConnectionManager {
         if (resolved) {
           return reject(
             new InvalidExecutionError(
-              'Program execution did not occur as expected.'
+              'Program execution did not occur as expected because the Promise already resolved and onReady cannot be called.'
             )
           );
         }
@@ -168,12 +175,12 @@ export class ConnectionManager {
           ConnectionManager.logContext
         );
 
-        client.off('ready', onReady);
+        this.client.off('ready', onReady);
         resolve(true);
 
-        new DiscordClientConnected(client).send();
+        new DiscordClientConnected(this.client).send();
       };
-      client.on('ready', onReady);
+      this.client.on('ready', onReady);
 
       const tenSeconds =
         10 * GlobalDefinition.TIME_OF_ONE_SECOND_IN_MILLISECONDS;
@@ -181,7 +188,7 @@ export class ConnectionManager {
         if (resolved) {
           return reject(
             new InvalidExecutionError(
-              'Program execution did not occur as expected.'
+              'Program execution did not occur as expected because the Promise already resolved and timeout cannot be called.'
             )
           );
         }
@@ -194,7 +201,7 @@ export class ConnectionManager {
           ConnectionManager.logContext
         );
 
-        client.off('ready', onReady);
+        this.client.off('ready', onReady);
         resolve(false);
       }, tenSeconds);
     });
@@ -205,10 +212,8 @@ export class ConnectionManager {
    */
   private async logout(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      if (!this.client.isReady()) {
-        return reject(
-          new InvalidExecutionError('The client was not logged in.')
-        );
+      if (this.isLogged) {
+        return reject(false);
       }
 
       new DiscordClientDisconnected(this.client).send();
