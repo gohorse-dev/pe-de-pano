@@ -5,13 +5,6 @@ import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceive
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 
 /**
- * Tipo para construtor para instâncias derivadas de InteractionHandler.
- */
-export type InteractionHandlerConstructor = new (
-  configuration: InteractionHandlerConfiguration
-) => InteractionHandler;
-
-/**
  * Representa um tratamento de interação com o Discord.
  */
 export abstract class InteractionHandler implements IInteractionHandler {
