@@ -1,10 +1,10 @@
-import { InteractionHandler } from '../../InteractionHandler';
+import { InteractionBase } from '../../InteractionBase';
 import { Interaction } from 'discord.js';
 import { GetDominosPizzaPrice } from '../../../../Service/DominosPizza/Message/GetDominosPizzaPrice';
 import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
 
 export class DominosPizzaPriceInteraction
-  extends InteractionHandler
+  extends InteractionBase
   implements ICommandInteractionHandler
 {
   /**

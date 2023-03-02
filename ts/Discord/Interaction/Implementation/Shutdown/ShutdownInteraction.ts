@@ -1,4 +1,4 @@
-import { InteractionHandler } from '../../InteractionHandler';
+import { InteractionBase } from '../../InteractionBase';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -17,7 +17,7 @@ import { NotImplementedError } from '@sergiocabral/helper';
  * Desliga o bot como aplição em execução no sistema operacional.
  */
 export class ShutdownInteraction
-  extends InteractionHandler
+  extends InteractionBase
   implements ICommandInteractionHandler
 {
   /**

@@ -1,9 +1,9 @@
-import { IInteractionHandler } from './IInteractionHandler';
+import { IInteractionBase } from './IInteractionBase';
 
 /**
  * Representa um tratamento de interação de comando com o Discord.
  */
-export interface ICommandInteractionHandler extends IInteractionHandler {
+export interface ICommandInteractionHandler extends IInteractionBase {
   /**
    * Nome.
    */

@@ -3,16 +3,16 @@ import { Interaction } from 'discord.js';
 /**
  * Representa um tratamento de interação com o Discord.
  */
-export interface IInteractionHandler {
+export interface IInteractionBase {
   /**
-   * Verifica se é uma interação possível de ser executada.
+   * Verifica se é uma interação que deve ser tratada.
    * @param interaction Interação chegada do discord.
    */
-  canRun(interaction: Interaction): boolean;
+  canHandle(interaction: Interaction): boolean;
 
   /**
-   * Executa o comando.
+   * Trata a interação.
    * @param interaction Interação chegada do discord.
    */
-  run(interaction: Interaction): Promise<void> | void;
+  handle(interaction: Interaction): Promise<void> | void;
 }

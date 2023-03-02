@@ -9,9 +9,10 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import { InteractionHandler } from '../Interaction/InteractionHandler';
-import { IInteractionHandler } from '../Interaction/IInteractionHandler';
-import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
+import { InteractionBase } from '../Interaction/InteractionBase';
+import { IInteractionBase } from '../Interaction/IInteractionBase';
+import { InteractionBaseConfiguration } from '../Interaction/InteractionBaseConfiguration';
+import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 
 /**
  * Responsável pela gerência das interações com o Discord.
@@ -35,7 +36,7 @@ export class IntegrationManager {
   /**
    * Interações disponíveis e carregadas.
    */
-  private interactions: IInteractionHandler[] = [];
+  private interactions: IInteractionBase[] = [];
 
   /**
    * Inscrição nas mensagens.
@@ -89,7 +90,7 @@ export class IntegrationManager {
    */
   private async loadInteraction(
     interactionFilePath: string
-  ): Promise<InteractionHandler | undefined> {
+  ): Promise<InteractionBase | undefined> {
     const regexInteractionName = /[^\\/]+(?=\.[^.]+)/;
     const interactionName = (interactionFilePath.match(regexInteractionName) ??
       [])[0];
@@ -153,13 +154,13 @@ export class IntegrationManager {
       return undefined;
     }
 
-    const configuration: InteractionHandlerConfiguration = {
+    const configuration: InteractionBaseConfiguration = {
       applicationParameters: this.applicationParameters
     };
 
     const interaction = new interactionClassConstructor(configuration);
 
-    if (!(interaction instanceof InteractionHandler)) {
+    if (!(interaction instanceof InteractionBase)) {
       Logger.post(
         'The type of the Discord API interaction class is incorrect in the corresponding file: "{interactionFilePath}"',
         {
