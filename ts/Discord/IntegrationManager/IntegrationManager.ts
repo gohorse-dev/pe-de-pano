@@ -7,10 +7,7 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import {
-  InteractionHandler,
-  InteractionHandlerConstructor
-} from '../Interaction/InteractionHandler';
+import { InteractionHandler } from '../Interaction/InteractionHandler';
 import { IInteractionHandler } from '../Interaction/IInteractionHandler';
 import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandlerConfiguration';
 
@@ -84,11 +81,11 @@ export class IntegrationManager {
       );
     }
 
-    let interactionModule: Record<string, InteractionHandlerConstructor>;
+    let interactionModule: Record<string, new (...args: unknown[]) => unknown>;
     try {
       interactionModule = (await import(interactionFilePath)) as Record<
         string,
-        InteractionHandlerConstructor
+        new (...args: unknown[]) => unknown
       >;
     } catch (error) {
       return undefined;
@@ -104,7 +101,13 @@ export class IntegrationManager {
       applicationParameters: this.applicationParameters
     };
 
-    return new interactionClassConstructor(configuration);
+    const interaction = new interactionClassConstructor(configuration);
+
+    if (!(interaction instanceof InteractionHandler)) {
+      return undefined;
+    }
+
+    return interaction;
   }
 
   /**
