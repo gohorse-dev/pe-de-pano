@@ -48,16 +48,13 @@ export class BotApp extends Application<BotAppConfiguration> {
     await new ApplicationReady().sendAsync();
 
     return new Promise(resolve => {
-      const closeApp = () => {
-        if (this.closeApp) {
-          resolve();
-        } else {
-          setTimeout(
-            closeApp,
-            GlobalDefinition.TIME_OF_ONE_SECOND_IN_MILLISECONDS
-          );
-        }
-      };
+      const closeApp = (): unknown =>
+        this.closeApp
+          ? resolve()
+          : setTimeout(
+              closeApp,
+              GlobalDefinition.TIME_OF_ONE_SECOND_IN_MILLISECONDS
+            );
       closeApp();
     });
   }
