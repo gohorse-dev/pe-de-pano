@@ -3,6 +3,8 @@ import {
   HelperFileSystem,
   HelperText,
   InvalidExecutionError,
+  Logger,
+  LogLevel,
   Message,
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
@@ -15,6 +17,12 @@ import { InteractionHandlerConfiguration } from '../Interaction/InteractionHandl
  * Responsável pela gerência das interações com o Discord.
  */
 export class IntegrationManager {
+  /**
+   * Contexto de log.
+   * @private
+   */
+  private static logContext = 'IntegrationManager';
+
   /**
    * Construtor.
    * @param applicationParameters Parâmetros da aplicação.
@@ -44,8 +52,6 @@ export class IntegrationManager {
     await this.loadInteractions();
   }
 
-  // TODO: Incluir logs.
-
   /**
    * Carrega todas as interações.
    */
@@ -54,12 +60,26 @@ export class IntegrationManager {
       throw new InvalidExecutionError('Interactions already loaded.');
     }
 
+    Logger.post(
+      'Loading interactions with the Discord API.',
+      undefined,
+      LogLevel.Verbose,
+      IntegrationManager.logContext
+    );
+
     for (const interactionFile of this.getInteractionFiles()) {
       const interaction = await this.loadInteraction(interactionFile);
       if (interaction !== undefined) {
         this.interactions.push(interaction);
       }
     }
+
+    Logger.post(
+      'Total Discord API interactions loaded: {interactionCount}',
+      { interactionCount: this.interactions.length },
+      LogLevel.Debug,
+      IntegrationManager.logContext
+    );
 
     return this.interactions.length;
   }
@@ -83,17 +103,54 @@ export class IntegrationManager {
 
     let interactionModule: Record<string, new (...args: unknown[]) => unknown>;
     try {
+      Logger.post(
+        'Trying to load Discord API interaction file: {interactionFilePath}',
+        {
+          interactionFilePath
+        },
+        LogLevel.Verbose,
+        IntegrationManager.logContext
+      );
+
       interactionModule = (await import(interactionFilePath)) as Record<
         string,
         new (...args: unknown[]) => unknown
       >;
+
+      Logger.post(
+        'Discord API interaction file loaded successfully: {interactionFilePath}',
+        {
+          interactionFilePath
+        },
+        LogLevel.Verbose,
+        IntegrationManager.logContext
+      );
     } catch (error) {
+      Logger.post(
+        'Error loading Discord API interaction file: {errorDescription}',
+        () => ({
+          errorDescription: HelperText.formatError(error),
+          error
+        }),
+        LogLevel.Error,
+        IntegrationManager.logContext
+      );
+
       return undefined;
     }
 
     const interactionClassConstructor = interactionModule[interactionName];
 
     if (typeof interactionClassConstructor !== 'function') {
+      Logger.post(
+        'The Discord API interaction class was not found in the corresponding file: {interactionFilePath}',
+        {
+          interactionFilePath
+        },
+        LogLevel.Error,
+        IntegrationManager.logContext
+      );
+
       return undefined;
     }
 
@@ -104,6 +161,15 @@ export class IntegrationManager {
     const interaction = new interactionClassConstructor(configuration);
 
     if (!(interaction instanceof InteractionHandler)) {
+      Logger.post(
+        'The type of the Discord API interaction class is incorrect in the corresponding file: {interactionFilePath}',
+        {
+          interactionFilePath
+        },
+        LogLevel.Error,
+        IntegrationManager.logContext
+      );
+
       return undefined;
     }
 
@@ -119,11 +185,49 @@ export class IntegrationManager {
     const regexInteractionFiles = new RegExp(
       '.+' + HelperText.escapeRegExp('Interaction' + extension) + '$'
     );
-    return HelperFileSystem.findFilesInto(
-      this.applicationParameters.packageDirectory,
-      regexInteractionFiles,
-      undefined,
-      'node_modules'
+
+    const interactionBasePath = this.applicationParameters.packageDirectory;
+
+    Logger.post(
+      'Recursively looking for Discord API interactions files in directory: {interactionBasePath}',
+      {
+        interactionBasePath
+      },
+      LogLevel.Verbose,
+      IntegrationManager.logContext
     );
+
+    try {
+      const files = HelperFileSystem.findFilesInto(
+        interactionBasePath,
+        regexInteractionFiles,
+        undefined,
+        'node_modules'
+      );
+
+      Logger.post(
+        'Discord API interactions files found: {interactionCount}, {interactionList}',
+        () => ({
+          interactionCount: files.length,
+          interactionList: files.map(file => `"${file}"`).join(', ')
+        }),
+        LogLevel.Debug,
+        IntegrationManager.logContext
+      );
+
+      return files;
+    } catch (error) {
+      Logger.post(
+        'Error when looking for Discord API interactions files: {errorDescription}',
+        () => ({
+          errorDescription: HelperText.formatError(error),
+          error
+        }),
+        LogLevel.Error,
+        IntegrationManager.logContext
+      );
+
+      return [];
+    }
   }
 }
