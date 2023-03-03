@@ -1,16 +1,17 @@
 import { ApplicationInteraction } from '../../ApplicationInteraction';
 import { Interaction } from 'discord.js';
-import { GetDominosPizzaPrice } from '../../../../Service/DominosPizza/Message/GetDominosPizzaPrice';
 import { ApplicationInteractionCommand } from '../../ApplicationInteractionCommand';
-import { InvalidExecutionError } from '@sergiocabral/helper';
 
-export class DominosPizzaPriceInteraction extends ApplicationInteraction {
+/**
+ * Um comando para ping-pong.
+ */
+export class PingPongInteraction extends ApplicationInteraction {
   /**
    * Informações como comando (se aplicável).
    */
   public override command = new ApplicationInteractionCommand(
-    'pixza',
-    'The PIXza exchange rate now.'
+    'ping',
+    'A ping-pong command.'
   );
 
   /**
@@ -26,15 +27,10 @@ export class DominosPizzaPriceInteraction extends ApplicationInteraction {
    * @param interaction Interação chegada do discord.
    */
   public override async handle(interaction: Interaction): Promise<void> {
-    if (!interaction.isRepliable()) {
-      throw new InvalidExecutionError(
-        'Expected a repliable Discord interaction.'
-      );
+    if (!interaction.isCommand()) {
+      return;
     }
 
-    const price = (await new GetDominosPizzaPrice().sendAsync()).message.price;
-    await interaction.reply(
-      `Hoje a cotação da PiXza está em ${price ?? 'sei lá quanto'}.`
-    );
+    await interaction.reply('pong');
   }
 }

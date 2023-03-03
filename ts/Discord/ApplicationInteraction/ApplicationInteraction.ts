@@ -1,6 +1,7 @@
 import { IApplicationInteraction } from './IApplicationInteraction';
 import { Interaction } from 'discord.js';
 import { ApplicationInteractionConfiguration } from './ApplicationInteractionConfiguration';
+import { IApplicationInteractionCommand } from './IApplicationInteractionCommand';
 
 /**
  * Representa uma interação de Discord tratada pela aplicação.
@@ -15,6 +16,11 @@ export abstract class ApplicationInteraction
   public constructor(
     protected readonly configuration: ApplicationInteractionConfiguration
   ) {}
+
+  /**
+   * Informações como comando (se aplicável).
+   */
+  public abstract get command(): IApplicationInteractionCommand | undefined;
 
   /**
    * Verifica se é uma interação que deve ser tratada.
