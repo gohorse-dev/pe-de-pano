@@ -6,6 +6,8 @@ import { ApplicationReady } from './Message/ApplicationReady';
 import { ConnectionManager } from '../Discord/IntegrationManager/ConnectionManager';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
 import { IntegrationManager } from '../Discord/IntegrationManager/IntegrationManager';
+import { InteractionLoader } from '../Discord/IntegrationManager/InteractionLoader';
+import { InteractionHandler } from '../Discord/IntegrationManager/InteractionHandler';
 
 /**
  * Aplicação vazia de exemplo.
@@ -72,6 +74,8 @@ export class BotApp extends Application<BotAppConfiguration> {
   private createModules(): void {
     void new DominosPizzaService();
     void new ConnectionManager(() => this.configuration.discord);
-    void new IntegrationManager(this.parameters);
+    void new InteractionLoader(this.parameters);
+    void new IntegrationManager();
+    void new InteractionHandler();
   }
 }

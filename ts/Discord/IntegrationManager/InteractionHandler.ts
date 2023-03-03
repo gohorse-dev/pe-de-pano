@@ -3,7 +3,6 @@ import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { Events, Interaction } from 'discord.js';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { ApplicationParameters } from '@gohorse/npm-application';
 
 /**
  * Responsável por capturar as interações com o Discord.
@@ -16,11 +15,8 @@ export class InteractionHandler {
 
   /**
    * Construtor.
-   * @param applicationParameters Parâmetros da aplição.
    */
-  public constructor(
-    private readonly applicationParameters: ApplicationParameters
-  ) {
+  public constructor() {
     Message.subscribe(
       DiscordClientConnected,
       this.handleDiscordClientConnected.bind(this)

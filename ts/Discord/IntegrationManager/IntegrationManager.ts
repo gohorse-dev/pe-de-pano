@@ -1,4 +1,3 @@
-import { ApplicationParameters } from '@gohorse/npm-application';
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 import { IInteractionBase } from '../Interaction/IInteractionBase';
@@ -15,11 +14,8 @@ export class IntegrationManager {
 
   /**
    * Construtor.
-   * @param applicationParameters Parâmetros da aplicação.
    */
-  public constructor(
-    private readonly applicationParameters: ApplicationParameters
-  ) {
+  public constructor() {
     this.subscribeToMessages();
   }
 
