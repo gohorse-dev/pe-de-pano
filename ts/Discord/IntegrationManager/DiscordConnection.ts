@@ -212,7 +212,7 @@ export class DiscordConnection {
    */
   private async logout(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      if (this.isLogged) {
+      if (!this.isLogged) {
         return reject(false);
       }
 
