@@ -1,10 +1,9 @@
 import { Interaction } from 'discord.js';
 
-// TODO: Renomear tirando o Base
 /**
- * Representa um tratamento de interação com o Discord.
+ * Representa uma interação de Discord tratada pela aplicação.
  */
-export interface IInteractionBase {
+export interface IApplicationInteraction {
   /**
    * Verifica se é uma interação que deve ser tratada.
    * @param interaction Interação chegada do discord.

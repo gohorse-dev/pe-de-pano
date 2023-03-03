@@ -1,9 +1,9 @@
 import { ApplicationParameters } from '@gohorse/npm-application';
 
 /**
- * Configurações usadas na construção de uma interação com o Discord.
+ * Configurações para classe derivadas de ApplicationInteraction.
  */
-export type InteractionBaseConfiguration = {
+export type ApplicationInteractionConfiguration = {
   /**
    * Parâmetros da aplicação.
    */

@@ -9,10 +9,10 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import { InteractionBase } from '../Interaction/InteractionBase';
-import { InteractionBaseConfiguration } from '../Interaction/InteractionBaseConfiguration';
+import { ApplicationInteraction } from '../Interaction/ApplicationInteraction';
+import { ApplicationInteractionConfiguration } from '../Interaction/ApplicationInteractionConfiguration';
 import { InteractionsLoaded } from '../Message/InteractionsLoaded';
-import { IInteractionBase } from '../Interaction/IInteractionBase';
+import { IApplicationInteraction } from '../Interaction/IApplicationInteraction';
 import { GetInteractions } from '../Message/GetInteractions';
 
 /**
@@ -37,7 +37,7 @@ export class ApplicationInteractionLoader {
   /**
    * Interações disponíveis e carregadas.
    */
-  private interactions: IInteractionBase[] = [];
+  private interactions: IApplicationInteraction[] = [];
 
   /**
    * Inscrição nas mensagens.
@@ -58,7 +58,9 @@ export class ApplicationInteractionLoader {
    * Mensagem: GetInteractions
    */
   private handleGetInteractions(message: GetInteractions): void {
-    message.interactions = Array<IInteractionBase>().concat(this.interactions);
+    message.interactions = Array<IApplicationInteraction>().concat(
+      this.interactions
+    );
   }
 
   /**
@@ -91,7 +93,7 @@ export class ApplicationInteractionLoader {
     );
 
     await new InteractionsLoaded(
-      Array<IInteractionBase>().concat(this.interactions)
+      Array<IApplicationInteraction>().concat(this.interactions)
     ).sendAsync();
 
     return this.interactions.length;
@@ -103,7 +105,7 @@ export class ApplicationInteractionLoader {
    */
   private async loadInteraction(
     interactionFilePath: string
-  ): Promise<IInteractionBase | undefined> {
+  ): Promise<IApplicationInteraction | undefined> {
     const regexInteractionName = /[^\\/]+(?=\.[^.]+)/;
     const interactionName = (interactionFilePath.match(regexInteractionName) ??
       [])[0];
@@ -167,13 +169,13 @@ export class ApplicationInteractionLoader {
       return undefined;
     }
 
-    const configuration: InteractionBaseConfiguration = {
+    const configuration: ApplicationInteractionConfiguration = {
       applicationParameters: this.applicationParameters
     };
 
     const interaction = new interactionClassConstructor(configuration);
 
-    if (!(interaction instanceof InteractionBase)) {
+    if (!(interaction instanceof ApplicationInteraction)) {
       Logger.post(
         'The type of the Discord API interaction class is incorrect in the corresponding file: "{interactionFilePath}"',
         {
@@ -186,7 +188,7 @@ export class ApplicationInteractionLoader {
       return undefined;
     }
 
-    return interaction as IInteractionBase;
+    return interaction as IApplicationInteraction;
   }
 
   /**

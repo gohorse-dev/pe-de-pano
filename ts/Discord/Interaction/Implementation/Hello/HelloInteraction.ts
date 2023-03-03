@@ -1,4 +1,4 @@
-import { InteractionBase } from '../../InteractionBase';
+import { ApplicationInteraction } from '../../ApplicationInteraction';
 import { Interaction } from 'discord.js';
 import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
 
@@ -6,7 +6,7 @@ import { ICommandInteractionHandler } from '../../ICommandInteractionHandler';
  * Um comando para ping-pong que responde com hello-world
  */
 export class HelloInteraction
-  extends InteractionBase
+  extends ApplicationInteraction
   implements ICommandInteractionHandler
 {
   /**

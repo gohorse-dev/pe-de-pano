@@ -1,6 +1,6 @@
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { IInteractionBase } from '../Interaction/IInteractionBase';
+import { IApplicationInteraction } from '../Interaction/IApplicationInteraction';
 import { InteractionsLoaded } from '../Message/InteractionsLoaded';
 
 /**
@@ -22,7 +22,7 @@ export class InteractionDispatcher {
   /**
    * Interações disponíveis.
    */
-  private interactions: IInteractionBase[] = [];
+  private interactions: IApplicationInteraction[] = [];
 
   /**
    * Inscrição nas mensagens.
@@ -42,7 +42,9 @@ export class InteractionDispatcher {
    * Mensagem: DiscordInteractionReceived
    */
   private handleInteractionsLoaded(message: InteractionsLoaded): void {
-    this.interactions = Array<IInteractionBase>().concat(message.interactions);
+    this.interactions = Array<IApplicationInteraction>().concat(
+      message.interactions
+    );
   }
 
   /**

@@ -1,17 +1,19 @@
-import { IInteractionBase } from './IInteractionBase';
+import { IApplicationInteraction } from './IApplicationInteraction';
 import { Interaction } from 'discord.js';
-import { InteractionBaseConfiguration } from './InteractionBaseConfiguration';
+import { ApplicationInteractionConfiguration } from './ApplicationInteractionConfiguration';
 
 /**
- * Representa um tratamento de interação com o Discord.
+ * Representa uma interação de Discord tratada pela aplicação.
  */
-export abstract class InteractionBase implements IInteractionBase {
+export abstract class ApplicationInteraction
+  implements IApplicationInteraction
+{
   /**
    * Construtor.
    * @param configuration Configurações usadas na construção de um comando.
    */
   public constructor(
-    protected readonly configuration: InteractionBaseConfiguration
+    protected readonly configuration: ApplicationInteractionConfiguration
   ) {}
 
   /**
