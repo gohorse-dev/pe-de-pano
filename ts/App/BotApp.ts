@@ -3,12 +3,12 @@ import { Logger, LogLevel } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
 import { ApplicationReady } from './Message/ApplicationReady';
-import { DiscordConnection } from '../Discord/IntegrationManager/DiscordConnection';
+import { DiscordConnection } from '../Discord/MessageHandler/DiscordConnection';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
-import { ApplicationInteractionDispatcher } from '../Discord/IntegrationManager/ApplicationInteractionDispatcher';
-import { ApplicationInteractionLoader } from '../Discord/IntegrationManager/ApplicationInteractionLoader';
-import { DiscordInteractionHandler } from '../Discord/IntegrationManager/DiscordInteractionHandler';
-import { DiscordCommandRegistration } from '../Discord/IntegrationManager/DiscordCommandRegistration';
+import { ApplicationInteractionDispatcher } from '../Discord/MessageHandler/ApplicationInteractionDispatcher';
+import { ApplicationInteractionLoader } from '../Discord/MessageHandler/ApplicationInteractionLoader';
+import { DiscordInteractionHandler } from '../Discord/MessageHandler/DiscordInteractionHandler';
+import { DiscordCommandRegistration } from '../Discord/MessageHandler/DiscordCommandRegistration';
 
 /**
  * Aplicação vazia de exemplo.
