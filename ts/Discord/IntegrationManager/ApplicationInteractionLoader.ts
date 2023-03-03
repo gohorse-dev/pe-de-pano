@@ -18,7 +18,7 @@ import { GetInteractions } from '../Message/GetInteractions';
 /**
  * Carrega as interações da aplicação dinamicamente.
  */
-export class InteractionLoader {
+export class ApplicationInteractionLoader {
   /**
    * Contexto de log.
    */
@@ -73,7 +73,7 @@ export class InteractionLoader {
       'Loading interactions with the Discord API.',
       undefined,
       LogLevel.Verbose,
-      InteractionLoader.logContext
+      ApplicationInteractionLoader.logContext
     );
 
     for (const interactionFile of this.getInteractionFiles()) {
@@ -87,7 +87,7 @@ export class InteractionLoader {
       'Total Discord API interactions loaded: {interactionCount}',
       { interactionCount: this.interactions.length },
       LogLevel.Debug,
-      InteractionLoader.logContext
+      ApplicationInteractionLoader.logContext
     );
 
     await new InteractionsLoaded(
@@ -122,7 +122,7 @@ export class InteractionLoader {
           interactionFilePath
         },
         LogLevel.Verbose,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       interactionModule = (await import(interactionFilePath)) as Record<
@@ -136,7 +136,7 @@ export class InteractionLoader {
           interactionFilePath
         },
         LogLevel.Verbose,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
     } catch (error) {
       Logger.post(
@@ -146,7 +146,7 @@ export class InteractionLoader {
           error
         }),
         LogLevel.Error,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       return undefined;
@@ -161,7 +161,7 @@ export class InteractionLoader {
           interactionFilePath
         },
         LogLevel.Error,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       return undefined;
@@ -180,7 +180,7 @@ export class InteractionLoader {
           interactionFilePath
         },
         LogLevel.Error,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       return undefined;
@@ -207,7 +207,7 @@ export class InteractionLoader {
         interactionBasePath
       },
       LogLevel.Verbose,
-      InteractionLoader.logContext
+      ApplicationInteractionLoader.logContext
     );
 
     try {
@@ -226,7 +226,7 @@ export class InteractionLoader {
           interactionList: files
         }),
         LogLevel.Debug,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       return files;
@@ -238,7 +238,7 @@ export class InteractionLoader {
           error
         }),
         LogLevel.Error,
-        InteractionLoader.logContext
+        ApplicationInteractionLoader.logContext
       );
 
       return [];

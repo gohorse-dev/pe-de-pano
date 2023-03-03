@@ -18,9 +18,9 @@ import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 
 /**
- * Responsável pela gerência da comunicação com o Discord.
+ * Responsável pela gerência da conexão com o Discord.
  */
-export class ConnectionManager {
+export class DiscordConnection {
   /**
    * Contexto do log.
    */
@@ -119,7 +119,7 @@ export class ConnectionManager {
         'Logging on through the client.',
         undefined,
         LogLevel.Verbose,
-        ConnectionManager.logContext
+        DiscordConnection.logContext
       );
 
       const result = await this.client.login(
@@ -132,14 +132,14 @@ export class ConnectionManager {
           'Login successful. Waiting to be ready.',
           undefined,
           LogLevel.Verbose,
-          ConnectionManager.logContext
+          DiscordConnection.logContext
         );
       } else {
         Logger.post(
           'Login seems to have been successfully performed, but the return was not as expected. Waiting to be ready.',
           undefined,
           LogLevel.Verbose,
-          ConnectionManager.logContext
+          DiscordConnection.logContext
         );
       }
     } catch (error) {
@@ -150,7 +150,7 @@ export class ConnectionManager {
           error
         }),
         LogLevel.Error,
-        ConnectionManager.logContext
+        DiscordConnection.logContext
       );
 
       return false;
@@ -172,7 +172,7 @@ export class ConnectionManager {
           'Login completed successfully.',
           undefined,
           LogLevel.Information,
-          ConnectionManager.logContext
+          DiscordConnection.logContext
         );
 
         this.client.off('ready', onReady);
@@ -198,7 +198,7 @@ export class ConnectionManager {
           'Login did not result in a ready state.',
           undefined,
           LogLevel.Error,
-          ConnectionManager.logContext
+          DiscordConnection.logContext
         );
 
         this.client.off('ready', onReady);
@@ -225,7 +225,7 @@ export class ConnectionManager {
         'Dropped client with discord to log off.',
         undefined,
         LogLevel.Information,
-        ConnectionManager.logContext
+        DiscordConnection.logContext
       );
 
       resolve(true);

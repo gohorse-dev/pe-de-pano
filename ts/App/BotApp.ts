@@ -3,11 +3,11 @@ import { Logger, LogLevel } from '@sergiocabral/helper';
 import { GlobalDefinition } from '@gohorse/npm-core';
 import { Application } from '@gohorse/npm-application';
 import { ApplicationReady } from './Message/ApplicationReady';
-import { ConnectionManager } from '../Discord/IntegrationManager/ConnectionManager';
+import { DiscordConnection } from '../Discord/IntegrationManager/DiscordConnection';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
-import { IntegrationManager } from '../Discord/IntegrationManager/IntegrationManager';
-import { InteractionLoader } from '../Discord/IntegrationManager/InteractionLoader';
-import { InteractionHandler } from '../Discord/IntegrationManager/InteractionHandler';
+import { InteractionDispatcher } from '../Discord/IntegrationManager/InteractionDispatcher';
+import { ApplicationInteractionLoader } from '../Discord/IntegrationManager/ApplicationInteractionLoader';
+import { DiscordInteractionHandler } from '../Discord/IntegrationManager/DiscordInteractionHandler';
 
 /**
  * Aplicação vazia de exemplo.
@@ -73,9 +73,9 @@ export class BotApp extends Application<BotAppConfiguration> {
    */
   private createModules(): void {
     void new DominosPizzaService();
-    void new ConnectionManager(() => this.configuration.discord);
-    void new InteractionLoader(this.parameters);
-    void new IntegrationManager();
-    void new InteractionHandler();
+    void new DiscordConnection(() => this.configuration.discord);
+    void new ApplicationInteractionLoader(this.parameters);
+    void new InteractionDispatcher();
+    void new DiscordInteractionHandler();
   }
 }

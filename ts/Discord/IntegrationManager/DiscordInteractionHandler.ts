@@ -5,9 +5,9 @@ import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected'
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
 
 /**
- * Responsável por capturar as interações com o Discord.
+ * Responsável por capturar as interações vindas do Discord.
  */
-export class InteractionHandler {
+export class DiscordInteractionHandler {
   /**
    * Contexto do log.
    */
@@ -60,7 +60,7 @@ export class InteractionHandler {
         interactionId: interaction.id
       },
       LogLevel.Verbose,
-      InteractionHandler.logContext
+      DiscordInteractionHandler.logContext
     );
 
     await new DiscordInteractionReceived(interaction).sendAsync();

@@ -4,9 +4,9 @@ import { IInteractionBase } from '../Interaction/IInteractionBase';
 import { InteractionsLoaded } from '../Message/InteractionsLoaded';
 
 /**
- * Responsável pela gerência das interações com o Discord.
+ * Recebe interações do Discord e despacha para a aplicação tratar.
  */
-export class IntegrationManager {
+export class InteractionDispatcher {
   /**
    * Contexto de log.
    */
@@ -67,7 +67,7 @@ export class IntegrationManager {
           )
         },
         LogLevel.Verbose,
-        IntegrationManager.logContext
+        InteractionDispatcher.logContext
       );
 
       for (const interaction of interactions) {
@@ -81,7 +81,7 @@ export class IntegrationManager {
               interactionName: interaction.constructor.name
             },
             LogLevel.Debug,
-            IntegrationManager.logContext
+            InteractionDispatcher.logContext
           );
         } catch (error) {
           Logger.post(
@@ -93,7 +93,7 @@ export class IntegrationManager {
               error
             }),
             LogLevel.Error,
-            IntegrationManager.logContext
+            InteractionDispatcher.logContext
           );
         }
       }
