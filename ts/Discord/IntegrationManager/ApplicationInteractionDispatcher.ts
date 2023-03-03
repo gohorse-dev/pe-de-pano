@@ -1,16 +1,16 @@
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { IApplicationInteraction } from '../Interaction/IApplicationInteraction';
-import { InteractionsLoaded } from '../Message/InteractionsLoaded';
+import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
+import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 
 /**
  * Recebe interações do Discord e despacha para a aplicação tratar.
  */
-export class InteractionDispatcher {
+export class ApplicationInteractionDispatcher {
   /**
    * Contexto de log.
    */
-  private static logContext = 'IntegrationManager';
+  private static logContext = 'ApplicationInteractionDispatcher';
 
   /**
    * Construtor.
@@ -29,7 +29,7 @@ export class InteractionDispatcher {
    */
   private subscribeToMessages(): void {
     Message.subscribe(
-      InteractionsLoaded,
+      ApplicationInteractionsLoaded,
       this.handleInteractionsLoaded.bind(this)
     );
     Message.subscribe(
@@ -41,7 +41,9 @@ export class InteractionDispatcher {
   /**
    * Mensagem: DiscordInteractionReceived
    */
-  private handleInteractionsLoaded(message: InteractionsLoaded): void {
+  private handleInteractionsLoaded(
+    message: ApplicationInteractionsLoaded
+  ): void {
     this.interactions = Array<IApplicationInteraction>().concat(
       message.interactions
     );
@@ -69,7 +71,7 @@ export class InteractionDispatcher {
           )
         },
         LogLevel.Verbose,
-        InteractionDispatcher.logContext
+        ApplicationInteractionDispatcher.logContext
       );
 
       for (const interaction of interactions) {
@@ -83,7 +85,7 @@ export class InteractionDispatcher {
               interactionName: interaction.constructor.name
             },
             LogLevel.Debug,
-            InteractionDispatcher.logContext
+            ApplicationInteractionDispatcher.logContext
           );
         } catch (error) {
           Logger.post(
@@ -95,7 +97,7 @@ export class InteractionDispatcher {
               error
             }),
             LogLevel.Error,
-            InteractionDispatcher.logContext
+            ApplicationInteractionDispatcher.logContext
           );
         }
       }

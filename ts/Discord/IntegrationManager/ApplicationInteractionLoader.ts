@@ -9,11 +9,11 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import { ApplicationInteraction } from '../Interaction/ApplicationInteraction';
-import { ApplicationInteractionConfiguration } from '../Interaction/ApplicationInteractionConfiguration';
-import { InteractionsLoaded } from '../Message/InteractionsLoaded';
-import { IApplicationInteraction } from '../Interaction/IApplicationInteraction';
-import { GetInteractions } from '../Message/GetInteractions';
+import { ApplicationInteraction } from '../ApplicationInteraction/ApplicationInteraction';
+import { ApplicationInteractionConfiguration } from '../ApplicationInteraction/ApplicationInteractionConfiguration';
+import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
+import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
+import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
 
 /**
  * Carrega as interações da aplicação dinamicamente.
@@ -22,7 +22,7 @@ export class ApplicationInteractionLoader {
   /**
    * Contexto de log.
    */
-  private static logContext = 'InteractionLoader';
+  private static logContext = 'ApplicationInteractionLoader';
 
   /**
    * Construtor.
@@ -44,7 +44,10 @@ export class ApplicationInteractionLoader {
    */
   private subscribeToMessages(): void {
     Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
-    Message.subscribe(GetInteractions, this.handleGetInteractions.bind(this));
+    Message.subscribe(
+      GetApplicationInteractions,
+      this.handleGetInteractions.bind(this)
+    );
   }
 
   /**
@@ -57,7 +60,7 @@ export class ApplicationInteractionLoader {
   /**
    * Mensagem: GetInteractions
    */
-  private handleGetInteractions(message: GetInteractions): void {
+  private handleGetInteractions(message: GetApplicationInteractions): void {
     message.interactions = Array<IApplicationInteraction>().concat(
       this.interactions
     );
@@ -92,7 +95,7 @@ export class ApplicationInteractionLoader {
       ApplicationInteractionLoader.logContext
     );
 
-    await new InteractionsLoaded(
+    await new ApplicationInteractionsLoaded(
       Array<IApplicationInteraction>().concat(this.interactions)
     ).sendAsync();
 
@@ -198,7 +201,7 @@ export class ApplicationInteractionLoader {
     const regexFileExtension = /\.[^.]+$/;
     const extension = (__filename.match(regexFileExtension) ?? [''])[0];
     const regexInteractionFiles = new RegExp(
-      '.+' + HelperText.escapeRegExp('Interaction' + extension) + '$'
+      '.+' + HelperText.escapeRegExp('ApplicationInteraction' + extension) + '$'
     );
 
     const interactionBasePath = this.applicationParameters.packageDirectory;

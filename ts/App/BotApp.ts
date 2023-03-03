@@ -5,7 +5,7 @@ import { Application } from '@gohorse/npm-application';
 import { ApplicationReady } from './Message/ApplicationReady';
 import { DiscordConnection } from '../Discord/IntegrationManager/DiscordConnection';
 import { DominosPizzaService } from '../Service/DominosPizza/DominosPizzaService';
-import { InteractionDispatcher } from '../Discord/IntegrationManager/InteractionDispatcher';
+import { ApplicationInteractionDispatcher } from '../Discord/IntegrationManager/ApplicationInteractionDispatcher';
 import { ApplicationInteractionLoader } from '../Discord/IntegrationManager/ApplicationInteractionLoader';
 import { DiscordInteractionHandler } from '../Discord/IntegrationManager/DiscordInteractionHandler';
 
@@ -75,7 +75,7 @@ export class BotApp extends Application<BotAppConfiguration> {
     void new DominosPizzaService();
     void new DiscordConnection(() => this.configuration.discord);
     void new ApplicationInteractionLoader(this.parameters);
-    void new InteractionDispatcher();
+    void new ApplicationInteractionDispatcher();
     void new DiscordInteractionHandler();
   }
 }

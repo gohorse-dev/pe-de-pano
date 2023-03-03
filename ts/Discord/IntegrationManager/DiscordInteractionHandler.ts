@@ -11,7 +11,7 @@ export class DiscordInteractionHandler {
   /**
    * Contexto do log.
    */
-  private static logContext = 'InteractionHandler';
+  private static logContext = 'DiscordInteractionHandler';
 
   /**
    * Construtor.

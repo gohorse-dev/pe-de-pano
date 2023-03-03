@@ -1,10 +1,10 @@
 import { Message } from '@sergiocabral/helper';
-import { IApplicationInteraction } from '../Interaction/IApplicationInteraction';
+import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
 
 /**
  * Sinaliza que as interações com o Discord foram carregadas.
  */
-export class InteractionsLoaded extends Message {
+export class ApplicationInteractionsLoaded extends Message {
   /**
    * Construtor.
    * @param interactions Interações com o Discord carregadas.

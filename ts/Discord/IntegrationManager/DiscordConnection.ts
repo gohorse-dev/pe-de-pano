@@ -24,7 +24,7 @@ export class DiscordConnection {
   /**
    * Contexto do log.
    */
-  private static logContext = 'ConnectionManager';
+  private static logContext = 'DiscordConnection';
 
   /**
    * Construtor.
