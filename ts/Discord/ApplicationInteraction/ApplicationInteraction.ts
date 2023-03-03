@@ -3,6 +3,9 @@ import { Interaction } from 'discord.js';
 import { ApplicationInteractionConfiguration } from './ApplicationInteractionConfiguration';
 import { IApplicationInteractionCommand } from './IApplicationInteractionCommand';
 
+// TODO: Criar serviço de tradução para interações com o Discord.
+// TODO: Criar interface para instâncias de comandos em execução.
+
 /**
  * Representa uma interação de Discord tratada pela aplicação.
  */
