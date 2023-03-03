@@ -34,7 +34,20 @@ export class DiscordCommandRegistration {
   ) {
     this.configuration = getConfiguration();
     this.rest = this.createRest();
+    this.subscribeToMessages();
+  }
 
+  private configuration: DiscordAuthenticationConfiguration;
+
+  /**
+   * Comunicador com a API do Message via REST.
+   */
+  private rest: REST;
+
+  /**
+   * Inscrição nas mensagens.
+   */
+  private subscribeToMessages(): void {
     Message.subscribe(
       ApplicationInteractionsLoaded,
       this.handleApplicationInteractionsLoaded.bind(this)
@@ -48,13 +61,6 @@ export class DiscordCommandRegistration {
       this.handleRegisterCommands.bind(this)
     );
   }
-
-  private configuration: DiscordAuthenticationConfiguration;
-
-  /**
-   * Comunicador com a API do Message via REST.
-   */
-  private rest: REST;
 
   /**
    * Mensagem: ApplicationInteractionsLoaded
