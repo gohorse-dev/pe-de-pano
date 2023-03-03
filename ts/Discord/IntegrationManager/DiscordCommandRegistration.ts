@@ -8,13 +8,13 @@ import {
 } from '@sergiocabral/helper';
 import { RegisterCommandOnDiscord } from '../Message/RegisterCommandOnDiscord';
 import { DiscordAuthenticationConfiguration } from '../DiscordAuthenticationConfiguration';
-import { ApplicationReady } from '../../App/Message/ApplicationReady';
 import { ConfigurationReloaded } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
 import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
 import { IApplicationInteractionCommand } from '../ApplicationInteraction/IApplicationInteractionCommand';
+import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 
 /**
  * Responsável pelo registro de comandos no Discord.
@@ -35,7 +35,10 @@ export class DiscordCommandRegistration {
     this.configuration = getConfiguration();
     this.rest = this.createRest();
 
-    Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
+    Message.subscribe(
+      ApplicationInteractionsLoaded,
+      this.handleApplicationInteractionsLoaded.bind(this)
+    );
     Message.subscribe(
       ConfigurationReloaded,
       this.handleConfigurationReloaded.bind(this)
@@ -54,9 +57,9 @@ export class DiscordCommandRegistration {
   private rest: REST;
 
   /**
-   * Mensagem: ApplicationReady
+   * Mensagem: ApplicationInteractionsLoaded
    */
-  private async handleApplicationReady(): Promise<void> {
+  private async handleApplicationInteractionsLoaded(): Promise<void> {
     await new RegisterCommandOnDiscord().sendAsync();
   }
 

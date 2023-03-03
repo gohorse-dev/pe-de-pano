@@ -14,6 +14,7 @@ import { ApplicationInteractionConfiguration } from '../ApplicationInteraction/A
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
+import path from 'node:path';
 
 /**
  * Carrega as interações da aplicação dinamicamente.
@@ -201,7 +202,7 @@ export class ApplicationInteractionLoader {
     const regexFileExtension = /\.[^.]+$/;
     const extension = (__filename.match(regexFileExtension) ?? [''])[0];
     const regexInteractionFiles = new RegExp(
-      '.+' + HelperText.escapeRegExp('ApplicationInteraction' + extension) + '$'
+      '.+' + HelperText.escapeRegExp('Interaction' + extension) + '$'
     );
 
     const interactionBasePath = this.applicationParameters.packageDirectory;
@@ -221,7 +222,7 @@ export class ApplicationInteractionLoader {
         regexInteractionFiles,
         undefined,
         'node_modules'
-      );
+      ).filter(filePath => !this.isInterfaceFile(filePath));
 
       Logger.post(
         'Discord API interactions files found: {interactionCount}, {interactionFileList}',
@@ -248,5 +249,18 @@ export class ApplicationInteractionLoader {
 
       return [];
     }
+  }
+
+  /**
+   * Verifica se um caminho é para um arquivo de interface.
+   */
+  private isInterfaceFile(filePath: string): boolean {
+    const fileName = path.basename(filePath);
+    const regexBaseClass = /^ApplicationInteraction\.[tj]s$/;
+    return (
+      regexBaseClass.test(fileName) ||
+      (fileName.startsWith('I') &&
+        fileName.substring(0, 2).toUpperCase() === fileName.substring(0, 2))
+    );
   }
 }
