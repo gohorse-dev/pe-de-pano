@@ -1,5 +1,4 @@
 import { ApplicationParameters } from '@gohorse/npm-application';
-import { IInteractionBase } from '../Interaction/IInteractionBase';
 import {
   HelperFileSystem,
   HelperText,
@@ -12,6 +11,8 @@ import {
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
 import { InteractionBase } from '../Interaction/InteractionBase';
 import { InteractionBaseConfiguration } from '../Interaction/InteractionBaseConfiguration';
+import { InteractionsLoaded } from '../Message/InteractionsLoaded';
+import { IInteractionBase } from '../Interaction/IInteractionBase';
 
 /**
  * Carrega as interações da aplicação dinamicamente.
@@ -80,6 +81,8 @@ export class InteractionLoader {
       InteractionLoader.logContext
     );
 
+    await new InteractionsLoaded(this.interactions).sendAsync();
+
     return this.interactions.length;
   }
 
@@ -89,7 +92,7 @@ export class InteractionLoader {
    */
   private async loadInteraction(
     interactionFilePath: string
-  ): Promise<InteractionBase | undefined> {
+  ): Promise<IInteractionBase | undefined> {
     const regexInteractionName = /[^\\/]+(?=\.[^.]+)/;
     const interactionName = (interactionFilePath.match(regexInteractionName) ??
       [])[0];
@@ -172,7 +175,7 @@ export class InteractionLoader {
       return undefined;
     }
 
-    return interaction;
+    return interaction as IInteractionBase;
   }
 
   /**

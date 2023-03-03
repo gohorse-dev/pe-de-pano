@@ -1,15 +1,15 @@
 import { Message } from '@sergiocabral/helper';
-import { IInteractionHandler } from '../../../js/Discord/Interaction/IInteractionHandler';
+import { IInteractionBase } from '../Interaction/IInteractionBase';
 
 /**
  * Sinaliza que as interações com o Discord foram carregadas.
  */
-export class InteractionLoaded extends Message {
+export class InteractionsLoaded extends Message {
   /**
    * Construtor.
    * @param interactions Interações com o Discord carregadas.
    */
-  public constructor(public readonly interactions: IInteractionHandler[]) {
+  public constructor(public readonly interactions: IInteractionBase[]) {
     super();
   }
 }

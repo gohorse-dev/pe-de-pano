@@ -1,5 +1,6 @@
 import { Interaction } from 'discord.js';
 
+// TODO: Renomear tirando o Base
 /**
  * Representa um tratamento de interação com o Discord.
  */
