@@ -13,6 +13,7 @@ import { InteractionBase } from '../Interaction/InteractionBase';
 import { InteractionBaseConfiguration } from '../Interaction/InteractionBaseConfiguration';
 import { InteractionsLoaded } from '../Message/InteractionsLoaded';
 import { IInteractionBase } from '../Interaction/IInteractionBase';
+import { GetInteractions } from '../Message/GetInteractions';
 
 /**
  * Carrega as interações da aplicação dinamicamente.
@@ -43,6 +44,7 @@ export class InteractionLoader {
    */
   private subscribeToMessages(): void {
     Message.subscribe(ApplicationReady, this.handleApplicationReady.bind(this));
+    Message.subscribe(GetInteractions, this.handleGetInteractions.bind(this));
   }
 
   /**
@@ -50,6 +52,13 @@ export class InteractionLoader {
    */
   private async handleApplicationReady(): Promise<void> {
     await this.loadInteractions();
+  }
+
+  /**
+   * Mensagem: GetInteractions
+   */
+  private handleGetInteractions(message: GetInteractions): void {
+    message.interactions = Array<IInteractionBase>().concat(this.interactions);
   }
 
   /**
@@ -81,7 +90,9 @@ export class InteractionLoader {
       InteractionLoader.logContext
     );
 
-    await new InteractionsLoaded(this.interactions).sendAsync();
+    await new InteractionsLoaded(
+      Array<IInteractionBase>().concat(this.interactions)
+    ).sendAsync();
 
     return this.interactions.length;
   }

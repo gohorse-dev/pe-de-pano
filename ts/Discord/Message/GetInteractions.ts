@@ -4,9 +4,9 @@ import { IInteractionBase } from '../Interaction/IInteractionBase';
 /**
  * Retorna a lista de todas as interações registradas.
  */
-export class GetAllInteractions extends Message {
+export class GetInteractions extends Message {
   /**
    * Lista de todas as interações.
    */
-  public allInteractions?: IInteractionBase[];
+  public interactions?: IInteractionBase[];
 }
