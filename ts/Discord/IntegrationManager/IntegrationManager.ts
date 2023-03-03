@@ -1,13 +1,8 @@
 import { ApplicationParameters } from '@gohorse/npm-application';
-import {
-  HelperText,
-  InvalidExecutionError,
-  Logger,
-  LogLevel,
-  Message
-} from '@sergiocabral/helper';
+import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { GetInteractions } from '../Message/GetInteractions';
+import { IInteractionBase } from '../Interaction/IInteractionBase';
+import { InteractionsLoaded } from '../Message/InteractionsLoaded';
 
 /**
  * Responsável pela gerência das interações com o Discord.
@@ -29,13 +24,29 @@ export class IntegrationManager {
   }
 
   /**
+   * Interações disponíveis.
+   */
+  private interactions: IInteractionBase[] = [];
+
+  /**
    * Inscrição nas mensagens.
    */
   private subscribeToMessages(): void {
     Message.subscribe(
+      InteractionsLoaded,
+      this.handleInteractionsLoaded.bind(this)
+    );
+    Message.subscribe(
       DiscordInteractionReceived,
       this.handleDiscordInteractionReceived.bind(this)
     );
+  }
+
+  /**
+   * Mensagem: DiscordInteractionReceived
+   */
+  private handleInteractionsLoaded(message: InteractionsLoaded): void {
+    this.interactions = Array<IInteractionBase>().concat(message.interactions);
   }
 
   /**
@@ -46,13 +57,7 @@ export class IntegrationManager {
   ): Promise<void> {
     const discordInteraction = message.interaction;
 
-    const allInteractions = (await new GetInteractions().sendAsync()).message
-      .interactions;
-    if (allInteractions === undefined) {
-      throw new InvalidExecutionError('Interactions not laoded.');
-    }
-
-    const interactions = allInteractions.filter(interaction =>
+    const interactions = this.interactions.filter(interaction =>
       interaction.canHandle(discordInteraction)
     );
 
