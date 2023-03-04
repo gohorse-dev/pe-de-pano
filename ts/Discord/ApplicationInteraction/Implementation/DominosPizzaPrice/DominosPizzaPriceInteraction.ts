@@ -17,7 +17,7 @@ export class DominosPizzaPriceInteraction extends ApplicationInteraction {
    * Verifica se é uma interação que deve ser tratada.
    * @param interaction Interação chegada do discord.
    */
-  public canHandle(interaction: Interaction): boolean {
+  public override canHandle(interaction: Interaction): boolean {
     return this.command.canHandle(interaction);
   }
 
