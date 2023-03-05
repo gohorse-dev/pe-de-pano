@@ -58,7 +58,7 @@ export class DiscordCommandRegistration {
     );
     Message.subscribe(
       RegisterCommandOnDiscord,
-      this.handleRegisterCommands.bind(this)
+      this.handleRegisterCommandOnDiscord.bind(this)
     );
   }
 
@@ -86,7 +86,7 @@ export class DiscordCommandRegistration {
   /**
    * Mensagem: RegisterCommands
    */
-  private async handleRegisterCommands(): Promise<void> {
+  private async handleRegisterCommandOnDiscord(): Promise<void> {
     const interactions = (await new GetApplicationInteractions().sendAsync())
       .message.interactions;
 
