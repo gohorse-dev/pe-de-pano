@@ -6,28 +6,36 @@ import {
 } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
+import { ShutdownInteractionStepAnswerYes } from './ShutdownInteractionStepAnswerYes';
+import { ShutdownInteractionStepAnswerNo } from './ShutdownInteractionStepAnswerNo';
 
 /**
  * Desliga o bot como aplição em execução no sistema operacional.
  */
-export class ShutdownInteractionStep1 extends ApplicationInteractionInstanceStep<ShutdownInteractionInstanceMemory> {
+export class ShutdownInteractionStepQuestion extends ApplicationInteractionInstanceStep<ShutdownInteractionInstanceMemory> {
+  /**
+   * Botão Não: Id
+   */
+  private buttonYesId = `${this.id}|${this.applicationInteractionInstance.memory.buttonYesId}`;
+
   /**
    * Botáo Sim: Instância
    */
   private buttonYes: ButtonBuilder = new ButtonBuilder()
-    .setCustomId(
-      `${this.id}|${this.applicationInteractionInstance.memory.buttonYesId}`
-    )
+    .setCustomId(this.buttonYesId)
     .setLabel('Yes. You deserve it.'.translate())
     .setStyle(ButtonStyle.Danger);
 
   /**
-   * Botáo Não: Instância
+   * Botão Não: Id
+   */
+  private buttonNoId = `${this.id}|${this.applicationInteractionInstance.memory.buttonNoId}`;
+
+  /**
+   * Botão Não: Instância
    */
   private buttonNo: ButtonBuilder = new ButtonBuilder()
-    .setCustomId(
-      `${this.id}|${this.applicationInteractionInstance.memory.buttonNoId}`
-    )
+    .setCustomId(this.buttonNoId)
     .setLabel('No. It was just a joke.'.translate())
     .setStyle(ButtonStyle.Primary);
 
@@ -40,6 +48,22 @@ export class ShutdownInteractionStep1 extends ApplicationInteractionInstanceStep
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
         this.buttonNo,
         this.buttonYes
+      );
+
+      this.applicationInteractionInstance.addStep(
+        new ShutdownInteractionStepAnswerNo(
+          this.applicationInteractionInstance,
+          this.discordInteraction
+        ),
+        this.buttonNoId
+      );
+
+      this.applicationInteractionInstance.addStep(
+        new ShutdownInteractionStepAnswerYes(
+          this.applicationInteractionInstance,
+          this.discordInteraction
+        ),
+        this.buttonYesId
       );
 
       await interaction.reply({

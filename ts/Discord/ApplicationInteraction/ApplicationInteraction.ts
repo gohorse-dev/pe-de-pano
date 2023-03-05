@@ -5,7 +5,7 @@ import { IApplicationInteractionCommand } from './IApplicationInteractionCommand
 import { HelperCryptography } from '@sergiocabral/helper';
 
 // TODO: Criar serviço de tradução para interações com o Discord.
-// TODO: Criar interface para instâncias de comandos em execução.
+// TODO: Revisar documentação nos comentários
 
 /**
  * Representa uma interação de Discord tratada pela aplicação.

@@ -1,5 +1,5 @@
 import { ApplicationInteractionInstance } from '../../ApplicationInteractionInstance';
-import { ShutdownInteractionStep1 } from './ShutdownInteractionStep1';
+import { ShutdownInteractionStepQuestion } from './ShutdownInteractionStepQuestion';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
 
 /**
@@ -14,5 +14,5 @@ export class ShutdownInteractionInstance extends ApplicationInteractionInstance<
   /**
    * Primeira etapa de no tratamento da interação.
    */
-  public override entryStepConstructor = ShutdownInteractionStep1;
+  public override entryStepConstructor = ShutdownInteractionStepQuestion;
 }

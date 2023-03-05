@@ -72,6 +72,14 @@ export abstract class ApplicationInteractionInstance<
   }
 
   /**
+   * Lista de etapas associadas a um id.
+   */
+  public readonly stepById: Record<
+    string,
+    ApplicationInteractionInstanceStep<TMemory>
+  > = {};
+
+  /**
    * Sinaliza que já começou a tratar a interação.
    */
   public get alreadyStartedHandle(): boolean {
@@ -91,5 +99,20 @@ export abstract class ApplicationInteractionInstance<
     const entryStep = new this.entryStepConstructor(this, discordInteraction);
     this.stepsValue.push(entryStep);
     await entryStep.handle(discordInteraction);
+  }
+
+  /**
+   * Adicionar um passo.
+   * @param step Passo.
+   * @param ids Ids associados.
+   */
+  public addStep(
+    step: ApplicationInteractionInstanceStep<TMemory>,
+    ...ids: string[]
+  ) {
+    this.stepsValue.push(step);
+    for (const id of ids) {
+      this.stepById[id] = step;
+    }
   }
 }

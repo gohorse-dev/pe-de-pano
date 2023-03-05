@@ -37,6 +37,23 @@ export abstract class ApplicationInteractionAsInstance<
   }
 
   /**
+   * Localiza um passo com base no Id.
+   */
+  private findStepById(
+    id: string
+  ): ApplicationInteractionInstanceStep<TMemory> | undefined {
+    let step = this.instances.find(instance => instance.stepById[id])?.stepById[
+      id
+    ];
+
+    if (step === undefined) {
+      step = this.allInstancesSteps.find(step => id.startsWith(step.id));
+    }
+
+    return step;
+  }
+
+  /**
    * Construtor para instância.
    */
   protected abstract get instanceConstructor(): ApplicationInteractionInstanceConstructor<TMemory>;
@@ -68,7 +85,7 @@ export abstract class ApplicationInteractionAsInstance<
       }
       return false;
     } else {
-      return this.allInstancesSteps.some(step => customId.startsWith(step.id));
+      return this.findStepById(customId) !== undefined;
     }
   }
 
@@ -92,12 +109,12 @@ export abstract class ApplicationInteractionAsInstance<
         }
       }
     } else {
-      const step = this.allInstancesSteps.find(step =>
-        customId.startsWith(step.id)
-      );
+      const step = this.findStepById(customId);
+
       if (step === undefined) {
         throw new ShouldNeverHappenError('Instance step not found.');
       }
+
       await step.handle(discordInteraction);
     }
   }
