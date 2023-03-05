@@ -2,7 +2,7 @@ import { ApplicationInteractionInstanceMemory } from '../../ApplicationInteracti
 import { ApplicationInteraction } from '../../ApplicationInteraction';
 
 /**
- * Memória compartilhada entre as etapas da instância da interação.
+ * Memória compartilhada entre etapas. Desliga o bot como aplição em execução no sistema operacional.
  */
 export class ShutdownInteractionInstanceMemory extends ApplicationInteractionInstanceMemory {
   /**

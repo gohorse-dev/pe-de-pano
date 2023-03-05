@@ -1,9 +1,9 @@
 import { ApplicationInteractionInstance } from '../../ApplicationInteractionInstance';
-import { ShutdownInteractionStepQuestion } from './ShutdownInteractionStepQuestion';
+import { ShutdownInteractionStepConfirmation } from './ShutdownInteractionStepConfirmation';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
 
 /**
- * Desliga o bot como aplição em execução no sistema operacional.
+ * Instância individual. Desliga o bot como aplição em execução no sistema operacional.
  */
 export class ShutdownInteractionInstance extends ApplicationInteractionInstance<ShutdownInteractionInstanceMemory> {
   /**
@@ -14,5 +14,5 @@ export class ShutdownInteractionInstance extends ApplicationInteractionInstance<
   /**
    * Primeira etapa de no tratamento da interação.
    */
-  public override entryStepConstructor = ShutdownInteractionStepQuestion;
+  public override entryStepConstructor = ShutdownInteractionStepConfirmation;
 }

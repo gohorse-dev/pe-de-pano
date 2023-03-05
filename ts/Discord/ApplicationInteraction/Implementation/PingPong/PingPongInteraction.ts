@@ -3,7 +3,7 @@ import { Interaction } from 'discord.js';
 import { ApplicationInteractionCommand } from '../../ApplicationInteractionCommand';
 
 /**
- * Um comando para ping-pong.
+ * Um comando para Ping Pong.
  */
 export class PingPongInteraction extends ApplicationInteraction {
   /**
@@ -15,22 +15,22 @@ export class PingPongInteraction extends ApplicationInteraction {
   );
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param interaction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada.
+   * @param discordInteraction Interação do Discord.
    */
-  public override canHandle(interaction: Interaction): boolean {
-    return this.command.canHandle(interaction);
+  public override canHandle(discordInteraction: Interaction): boolean {
+    return this.command.canHandle(discordInteraction);
   }
 
   /**
-   * Trata a interação.
-   * @param interaction Interação chegada do discord.
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do Discord.
    */
-  public override async handle(interaction: Interaction): Promise<void> {
-    if (!interaction.isCommand()) {
+  public override async handle(discordInteraction: Interaction): Promise<void> {
+    if (!discordInteraction.isCommand()) {
       return;
     }
 
-    await interaction.reply('pong');
+    await discordInteraction.reply('pong');
   }
 }

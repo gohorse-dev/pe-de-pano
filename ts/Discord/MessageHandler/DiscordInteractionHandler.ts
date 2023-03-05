@@ -51,18 +51,20 @@ export class DiscordInteractionHandler {
 
   /**
    * Despacha uma interação.
-   * @param interaction
+   * @param discordInteraction
    */
-  private async dispatchInteraction(interaction: Interaction): Promise<void> {
+  private async dispatchInteraction(
+    discordInteraction: Interaction
+  ): Promise<void> {
     Logger.post(
       'Received Discord interaction message with id "{interactionId}".',
       {
-        interactionId: interaction.id
+        interactionId: discordInteraction.id
       },
       LogLevel.Verbose,
       DiscordInteractionHandler.logContext
     );
 
-    await new DiscordInteractionReceived(interaction).sendAsync();
+    await new DiscordInteractionReceived(discordInteraction).sendAsync();
   }
 }

@@ -44,8 +44,8 @@ export abstract class ApplicationInteractionInstanceStep<
   }
 
   /**
-   * Trata a interação.
-   * @param discordInteraction Interação chegada do discord.
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do Discord.
    */
   public abstract handle(discordInteraction: Interaction): Promise<void>;
 }

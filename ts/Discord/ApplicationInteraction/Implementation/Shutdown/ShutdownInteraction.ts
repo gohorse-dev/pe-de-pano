@@ -22,8 +22,8 @@ export class ShutdownInteraction extends ApplicationInteractionAsInstance<Shutdo
   protected override instanceConstructor = ShutdownInteractionInstance;
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param discordInteraction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada.
+   * @param discordInteraction Interação do Discord.
    */
   protected override canStartHandle(discordInteraction: Interaction): boolean {
     return this.command.canHandle(discordInteraction);

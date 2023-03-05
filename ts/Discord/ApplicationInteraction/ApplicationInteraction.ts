@@ -3,10 +3,9 @@ import { HelperCryptography } from '@sergiocabral/helper';
 import { ApplicationInteractionCommand } from './ApplicationInteractionCommand';
 
 // TODO: Criar serviço de tradução para interações com o Discord.
-// TODO: Revisar documentação nos comentários
 
 /**
- * Representa uma interação de Discord tratada pela aplicação.
+ * Interação de Discord tratada pela aplicação.
  */
 export abstract class ApplicationInteraction {
   /**
@@ -23,16 +22,16 @@ export abstract class ApplicationInteraction {
   public abstract get command(): ApplicationInteractionCommand | undefined;
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param interaction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada.
+   * @param discordInteraction Interação do Discord.
    */
   public abstract canHandle(
-    interaction: Interaction
+    discordInteraction: Interaction
   ): Promise<boolean> | boolean;
 
   /**
-   * Trata a interação.
-   * @param interaction Interação chegada do discord.
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do discord.
    */
-  public abstract handle(interaction: Interaction): Promise<void> | void;
+  public abstract handle(discordInteraction: Interaction): Promise<void> | void;
 }

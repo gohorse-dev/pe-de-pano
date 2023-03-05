@@ -9,7 +9,7 @@ import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionIn
 import { ApplicationInteractionInstanceStep } from './ApplicationInteractionInstanceStep';
 
 /**
- * Representa uma interação de Discord que cria uma instância para cada tratamento.
+ * Interação de Discord tratada pela aplicação trabalhada como instâncias individuais.
  */
 export abstract class ApplicationInteractionAsInstance<
   TMemory extends ApplicationInteractionInstanceMemory
@@ -59,16 +59,16 @@ export abstract class ApplicationInteractionAsInstance<
   protected abstract get instanceConstructor(): ApplicationInteractionInstanceConstructor<TMemory>;
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param discordInteraction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada a ponto de iniciar uma nova instância.
+   * @param discordInteraction Interação do Discord.
    */
   protected abstract canStartHandle(
     discordInteraction: Interaction
   ): Promise<boolean> | boolean;
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param discordInteraction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada.
+   * @param discordInteraction Interação do Discord.
    */
   public override canHandle(discordInteraction: Interaction): boolean {
     const customId =
@@ -90,8 +90,8 @@ export abstract class ApplicationInteractionAsInstance<
   }
 
   /**
-   * Trata a interação.
-   * @param discordInteraction Interação chegada do discord.
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do Discord.
    */
   public override async handle(discordInteraction: Interaction): Promise<void> {
     const customId =

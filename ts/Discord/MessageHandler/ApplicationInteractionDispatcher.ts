@@ -55,7 +55,7 @@ export class ApplicationInteractionDispatcher {
   private async handleDiscordInteractionReceived(
     message: DiscordInteractionReceived
   ): Promise<void> {
-    const discordInteraction = message.interaction;
+    const discordInteraction = message.discordInteraction;
 
     const capableIinteractions: ApplicationInteraction[] = [];
     for (const interaction of this.interactions) {
@@ -66,10 +66,10 @@ export class ApplicationInteractionDispatcher {
 
     if (capableIinteractions.length > 0) {
       Logger.post(
-        'Discord interaction message with id "{interactionId}" will be handled by: {interactionNameList}',
+        'Discord interaction message with id "{discordInteractionId}" will be handled by: {applicationInteractionNameList}',
         () => ({
-          interactionId: discordInteraction.id,
-          interactionNameList: capableIinteractions.map(
+          discordInteractionId: discordInteraction.id,
+          applicationInteractionNameList: capableIinteractions.map(
             interaction => interaction.constructor.name
           )
         }),
@@ -79,23 +79,23 @@ export class ApplicationInteractionDispatcher {
 
       for (const interaction of capableIinteractions) {
         try {
-          await interaction.handle(message.interaction);
+          await interaction.handle(message.discordInteraction);
 
           Logger.post(
-            'Discord interaction message with id "{interactionId}" was successfully handled by "{interactionName}".',
+            'Discord interaction message with id "{discordInteractionId}" was successfully handled by "{applicationInteractionName}".',
             {
-              interactionId: discordInteraction.id,
-              interactionName: interaction.constructor.name
+              discordInteractionId: discordInteraction.id,
+              applicationInteractionName: interaction.constructor.name
             },
             LogLevel.Debug,
             ApplicationInteractionDispatcher.logContext
           );
         } catch (error) {
           Logger.post(
-            'An error occurred while handling a Discord interaction message with id "{interactionId}" by "{interactionName}": {errorDescription}',
+            'An error occurred while handling a Discord interaction message with id "{discordInteractionId}" by "{applicationInteractionName}": {errorDescription}',
             () => ({
-              interactionId: discordInteraction.id,
-              interactionName: interaction.constructor.name,
+              discordInteractionId: discordInteraction.id,
+              applicationInteractionName: interaction.constructor.name,
               errorDescription: HelperText.formatError(error),
               error
             }),

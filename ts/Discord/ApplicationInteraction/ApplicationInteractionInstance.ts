@@ -87,7 +87,7 @@ export abstract class ApplicationInteractionInstance<
   }
 
   /**
-   * Inicia o tratamento
+   * Inicia o tratamento da interação do Discord com o passo de entrada.
    * @param discordInteraction Interação do Discord.
    */
   public async startHandle(discordInteraction: Interaction): Promise<void> {
@@ -102,7 +102,7 @@ export abstract class ApplicationInteractionInstance<
   }
 
   /**
-   * Adicionar um passo.
+   * Adicionar um passo e associa a identificadores.
    * @param step Passo.
    * @param ids Ids associados.
    */

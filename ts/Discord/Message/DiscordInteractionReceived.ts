@@ -7,9 +7,9 @@ import { Interaction } from 'discord.js';
 export class DiscordInteractionReceived extends Message {
   /**
    * Construtor.
-   * @param interaction Interação do Message.
+   * @param discordInteraction Interação do Message.
    */
-  constructor(public readonly interaction: Interaction) {
+  constructor(public readonly discordInteraction: Interaction) {
     super();
   }
 }

@@ -1,7 +1,7 @@
 import { Interaction } from 'discord.js';
 
 /**
- * Representa um comando tratado pela aplicação
+ * Comando de Discord tratada pela aplicação
  */
 export class ApplicationInteractionCommand {
   /**
@@ -15,10 +15,13 @@ export class ApplicationInteractionCommand {
   ) {}
 
   /**
-   * Verifica se é uma interação que deve ser tratada.
-   * @param interaction Interação chegada do discord.
+   * Verifica se é uma interação do Discord que deve ser tratada.
+   * @param discordInteraction Interação do Discord.
    */
-  public canHandle(interaction: Interaction): boolean {
-    return interaction.isCommand() && interaction.commandName === this.name;
+  public canHandle(discordInteraction: Interaction): boolean {
+    return (
+      discordInteraction.isCommand() &&
+      discordInteraction.commandName === this.name
+    );
   }
 }

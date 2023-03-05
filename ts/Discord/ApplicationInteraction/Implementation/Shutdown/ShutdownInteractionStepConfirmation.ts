@@ -10,9 +10,10 @@ import { ShutdownInteractionStepAnswerYes } from './ShutdownInteractionStepAnswe
 import { ShutdownInteractionStepAnswerNo } from './ShutdownInteractionStepAnswerNo';
 
 /**
+ * Pergunta de confirmação.
  * Desliga o bot como aplição em execução no sistema operacional.
  */
-export class ShutdownInteractionStepQuestion extends ApplicationInteractionInstanceStep<ShutdownInteractionInstanceMemory> {
+export class ShutdownInteractionStepConfirmation extends ApplicationInteractionInstanceStep<ShutdownInteractionInstanceMemory> {
   /**
    * Botão Não: Id
    */
@@ -40,11 +41,11 @@ export class ShutdownInteractionStepQuestion extends ApplicationInteractionInsta
     .setStyle(ButtonStyle.Primary);
 
   /**
-   * Trata a interação.
-   * @param interaction Interação chegada do discord.
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do Discord.
    */
-  public override async handle(interaction: Interaction): Promise<void> {
-    if (interaction.isCommand()) {
+  public override async handle(discordInteraction: Interaction): Promise<void> {
+    if (discordInteraction.isCommand()) {
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
         this.buttonNo,
         this.buttonYes
@@ -66,7 +67,7 @@ export class ShutdownInteractionStepQuestion extends ApplicationInteractionInsta
         this.buttonYesId
       );
 
-      await interaction.reply({
+      await discordInteraction.reply({
         content: 'You intend to kill me, is that it?'.translate(),
         components: [row],
         ephemeral: true
