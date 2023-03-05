@@ -120,7 +120,7 @@ export abstract class ApplicationInteractionAsInstance<
     if (customId === undefined) {
       for (const instance of this.instances) {
         if (
-          instance.discordInteraction === discordInteraction &&
+          instance.discordInteractions.first() === discordInteraction &&
           !instance.alreadyStartedHandle
         ) {
           Logger.post(

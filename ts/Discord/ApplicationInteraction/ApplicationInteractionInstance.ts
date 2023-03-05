@@ -1,5 +1,5 @@
 import { InvalidExecutionError } from '@sergiocabral/helper';
-import { Interaction } from 'discord.js';
+import { Interaction, InteractionResponse } from 'discord.js';
 import { ApplicationInteractionAsInstance } from './ApplicationInteractionAsInstance';
 import {
   ApplicationInteractionInstanceStep,
@@ -7,6 +7,7 @@ import {
 } from './ApplicationInteractionInstanceStep';
 import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionInstanceMemory';
 import { ApplicationInteraction } from './ApplicationInteraction';
+import { Queue } from '../../Helper/Queue';
 
 /**
  * Construtor para ApplicationInteractionInstance
@@ -31,8 +32,10 @@ export abstract class ApplicationInteractionInstance<
    */
   public constructor(
     public readonly applicationInteraction: ApplicationInteractionAsInstance<TMemory>,
-    public readonly discordInteraction: Interaction
-  ) {}
+    discordInteraction: Interaction
+  ) {
+    this.discordInteractions.enqueueIfNotExists(discordInteraction);
+  }
 
   /**
    * Identificador único desta instância.
@@ -50,6 +53,16 @@ export abstract class ApplicationInteractionInstance<
    * Memória da instância compartilhada entre as etapas.
    */
   public abstract get memory(): TMemory;
+
+  /**
+   * Fila de interações do Discord.
+   */
+  public discordInteractions = new Queue<Interaction>();
+
+  /**
+   * Fila de repostas das interações do Discord.
+   */
+  public discordInteractionsResponses = new Queue<InteractionResponse>();
 
   /**
    * Primeira etapa de no tratamento da interação.

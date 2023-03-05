@@ -1,4 +1,4 @@
-import { Interaction } from 'discord.js';
+import { Interaction, InteractionResponse } from 'discord.js';
 import { ApplicationInteractionInstance } from './ApplicationInteractionInstance';
 import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionInstanceMemory';
 import { ApplicationInteraction } from './ApplicationInteraction';
@@ -26,8 +26,12 @@ export abstract class ApplicationInteractionInstanceStep<
    */
   public constructor(
     public readonly applicationInteractionInstance: ApplicationInteractionInstance<TMemory>,
-    public readonly discordInteraction: Interaction
-  ) {}
+    discordInteraction: Interaction
+  ) {
+    this.applicationInteractionInstance.discordInteractions.enqueueIfNotExists(
+      discordInteraction
+    );
+  }
 
   /**
    * Identificador desta etapa.
@@ -47,5 +51,21 @@ export abstract class ApplicationInteractionInstanceStep<
    * Trata a interação do Discord.
    * @param discordInteraction Interação do Discord.
    */
-  public abstract handle(discordInteraction: Interaction): Promise<void>;
+  protected abstract doHandle(
+    discordInteraction: Interaction
+  ): Promise<InteractionResponse>;
+
+  /**
+   * Trata a interação do Discord.
+   * @param discordInteraction Interação do Discord.
+   */
+  public async handle(discordInteraction: Interaction): Promise<void> {
+    this.applicationInteractionInstance.discordInteractions.enqueueIfNotExists(
+      discordInteraction
+    );
+    const discordInteractionResponse = await this.doHandle(discordInteraction);
+    this.applicationInteractionInstance.discordInteractionsResponses.enqueueIfNotExists(
+      discordInteractionResponse
+    );
+  }
 }

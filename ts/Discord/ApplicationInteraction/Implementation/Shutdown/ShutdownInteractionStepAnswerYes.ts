@@ -1,7 +1,8 @@
-import { Interaction } from 'discord.js';
+import { Interaction, InteractionResponse } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { Instance, TerminateApplication } from '@gohorse/npm-core';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
+import { ShouldNeverHappenError } from '@sergiocabral/helper';
 
 /**
  * Resposta Sim para a pergunta de confirmação.
@@ -12,13 +13,20 @@ export class ShutdownInteractionStepAnswerYes extends ApplicationInteractionInst
    * Trata a interação do Discord.
    * @param discordInteraction Interação do Discord.
    */
-  public override async handle(discordInteraction: Interaction): Promise<void> {
-    if (discordInteraction.isRepliable()) {
-      await discordInteraction.reply({
-        content: "I'm going, but I'll be back.".translate(),
-        ephemeral: true
-      });
-      await new TerminateApplication(Instance.id, Instance.id).sendAsync();
+  protected override async doHandle(
+    discordInteraction: Interaction
+  ): Promise<InteractionResponse> {
+    if (!discordInteraction.isRepliable()) {
+      throw new ShouldNeverHappenError(
+        'Expected a Discord interaction as replieable.'
+      );
     }
+
+    await new TerminateApplication(Instance.id, Instance.id).sendAsync();
+
+    return discordInteraction.reply({
+      content: "I'm going, but I'll be back.".translate(),
+      ephemeral: true
+    });
   }
 }

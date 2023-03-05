@@ -1,6 +1,7 @@
-import { Interaction } from 'discord.js';
+import { Interaction, InteractionResponse } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
+import { ShouldNeverHappenError } from '@sergiocabral/helper';
 
 /**
  * Resposta Não para a pergunta de confirmação.
@@ -11,12 +12,18 @@ export class ShutdownInteractionStepAnswerNo extends ApplicationInteractionInsta
    * Trata a interação do Discord.
    * @param discordInteraction Interação do Discord.
    */
-  public override async handle(discordInteraction: Interaction): Promise<void> {
-    if (discordInteraction.isRepliable()) {
-      await discordInteraction.reply({
-        content: 'Phew! What a fright.'.translate(),
-        ephemeral: true
-      });
+  protected override async doHandle(
+    discordInteraction: Interaction
+  ): Promise<InteractionResponse> {
+    if (!discordInteraction.isRepliable()) {
+      throw new ShouldNeverHappenError(
+        'Expected a Discord interaction as replieable.'
+      );
     }
+
+    return discordInteraction.reply({
+      content: 'Phew! What a fright.'.translate(),
+      ephemeral: true
+    });
   }
 }
