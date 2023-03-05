@@ -3,7 +3,6 @@ import { HelperCryptography } from '@sergiocabral/helper';
 import { ApplicationInteractionCommand } from './ApplicationInteractionCommand';
 
 // TODO: Criar serviço de tradução para interações com o Discord.
-// TODO: Registrar Logs nas interações
 // TODO: Liberar instâncias concluídas.
 
 /**

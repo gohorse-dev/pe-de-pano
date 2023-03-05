@@ -4,7 +4,7 @@ import {
   ApplicationInteractionInstance,
   ApplicationInteractionInstanceConstructor
 } from './ApplicationInteractionInstance';
-import { ShouldNeverHappenError } from '@sergiocabral/helper';
+import { Logger, LogLevel, ShouldNeverHappenError } from '@sergiocabral/helper';
 import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionInstanceMemory';
 import { ApplicationInteractionInstanceStep } from './ApplicationInteractionInstanceStep';
 
@@ -14,6 +14,12 @@ import { ApplicationInteractionInstanceStep } from './ApplicationInteractionInst
 export abstract class ApplicationInteractionAsInstance<
   TMemory extends ApplicationInteractionInstanceMemory
 > extends ApplicationInteraction {
+  /**
+   * Contexto de log.
+   * @private
+   */
+  private static logContext = 'ApplicationInteractionAsInstance';
+
   /**
    * Identificador de uso geral.
    */
@@ -78,9 +84,21 @@ export abstract class ApplicationInteractionAsInstance<
 
     if (customId === undefined) {
       if (this.canStartHandle(discordInteraction)) {
-        this.instances.push(
-          new this.instanceConstructor(this, discordInteraction)
+        // TODO: Destruir instância depois de um tempo?
+        const instance = new this.instanceConstructor(this, discordInteraction);
+        this.instances.push(instance);
+
+        Logger.post(
+          'A new "{applicationInteractionInstanceName}" instance with id "{applicationInteractionInstanceId}" was created to handle the Discord interaction with id "{discordInteractionId}".',
+          () => ({
+            applicationInteractionInstanceId: instance.id,
+            applicationInteractionInstanceName: instance.constructor.name,
+            discordInteractionId: discordInteraction.id
+          }),
+          LogLevel.Debug,
+          ApplicationInteractionAsInstance.logContext
         );
+
         return true;
       }
       return false;
@@ -105,7 +123,29 @@ export abstract class ApplicationInteractionAsInstance<
           instance.discordInteraction === discordInteraction &&
           !instance.alreadyStartedHandle
         ) {
+          Logger.post(
+            'Handling Discord interaction with id "{discordInteractionId}" for the first time by "{applicationInteractionInstanceName}" instance with id "{applicationInteractionInstanceId}".',
+            () => ({
+              applicationInteractionInstanceId: instance.id,
+              applicationInteractionInstanceName: instance.constructor.name,
+              discordInteractionId: discordInteraction.id
+            }),
+            LogLevel.Verbose,
+            ApplicationInteractionAsInstance.logContext
+          );
+
           await instance.startHandle(discordInteraction);
+
+          Logger.post(
+            'Successfully handled Discord interaction with id "{discordInteractionId}" for the first time by "{applicationInteractionInstanceName}" instance with id "{applicationInteractionInstanceId}".',
+            () => ({
+              applicationInteractionInstanceId: instance.id,
+              applicationInteractionInstanceName: instance.constructor.name,
+              discordInteractionId: discordInteraction.id
+            }),
+            LogLevel.Debug,
+            ApplicationInteractionAsInstance.logContext
+          );
         }
       }
     } else {
@@ -115,7 +155,31 @@ export abstract class ApplicationInteractionAsInstance<
         throw new ShouldNeverHappenError('Instance step not found.');
       }
 
+      Logger.post(
+        'Handling Discord interaction with id "{discordInteractionId}" and customId "{customId}" by "{applicationInteractionInstanceStepName}" step with id "{applicationInteractionInstanceStepId}".',
+        () => ({
+          customId,
+          applicationInteractionInstanceStepId: step.id,
+          applicationInteractionInstanceStepName: step.constructor.name,
+          discordInteractionId: discordInteraction.id
+        }),
+        LogLevel.Verbose,
+        ApplicationInteractionAsInstance.logContext
+      );
+
       await step.handle(discordInteraction);
+
+      Logger.post(
+        'Successfully handled Discord interaction with id "{discordInteractionId}" and customId "{customId}" by "{applicationInteractionInstanceStepName}" step with id "{applicationInteractionInstanceStepId}".',
+        () => ({
+          customId,
+          applicationInteractionInstanceStepId: step.id,
+          applicationInteractionInstanceStepName: step.constructor.name,
+          discordInteractionId: discordInteraction.id
+        }),
+        LogLevel.Debug,
+        ApplicationInteractionAsInstance.logContext
+      );
     }
   }
 }
