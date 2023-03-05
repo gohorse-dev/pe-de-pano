@@ -57,8 +57,8 @@ export class ApplicationInteractionDispatcher {
   ): Promise<void> {
     const discordInteraction = message.interaction;
 
-    const interactions = this.interactions.filter(interaction =>
-      interaction.canHandle(discordInteraction)
+    const interactions = this.interactions.filter(
+      async interaction => await interaction.canHandle(discordInteraction)
     );
 
     if (interactions.length > 0) {
