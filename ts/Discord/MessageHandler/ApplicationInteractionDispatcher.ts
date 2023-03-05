@@ -67,12 +67,12 @@ export class ApplicationInteractionDispatcher {
     if (capableIinteractions.length > 0) {
       Logger.post(
         'Discord interaction message with id "{interactionId}" will be handled by: {interactionNameList}',
-        {
+        () => ({
           interactionId: discordInteraction.id,
           interactionNameList: capableIinteractions.map(
             interaction => interaction.constructor.name
           )
-        },
+        }),
         LogLevel.Verbose,
         ApplicationInteractionDispatcher.logContext
       );
