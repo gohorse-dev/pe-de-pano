@@ -15,7 +15,7 @@ export class ShutdownInteractionStepAnswerYes extends ApplicationInteractionInst
   public override async handle(discordInteraction: Interaction): Promise<void> {
     if (discordInteraction.isRepliable()) {
       await discordInteraction.reply({
-        content: "I'll be back.".translate(),
+        content: "I'm going, but I'll be back.".translate(),
         ephemeral: true
       });
       await new TerminateApplication(Instance.id, Instance.id).sendAsync();
