@@ -57,16 +57,19 @@ export class ApplicationInteractionDispatcher {
   ): Promise<void> {
     const discordInteraction = message.interaction;
 
-    const interactions = this.interactions.filter(
-      async interaction => await interaction.canHandle(discordInteraction)
-    );
+    const capableIinteractions: IApplicationInteraction[] = [];
+    for (const interaction of this.interactions) {
+      if (await interaction.canHandle(discordInteraction)) {
+        capableIinteractions.push(interaction);
+      }
+    }
 
-    if (interactions.length > 0) {
+    if (capableIinteractions.length > 0) {
       Logger.post(
         'Discord interaction message with id "{interactionId}" will be handled by: {interactionNameList}',
         {
           interactionId: discordInteraction.id,
-          interactionNameList: interactions.map(
+          interactionNameList: capableIinteractions.map(
             interaction => interaction.constructor.name
           )
         },
@@ -74,7 +77,7 @@ export class ApplicationInteractionDispatcher {
         ApplicationInteractionDispatcher.logContext
       );
 
-      for (const interaction of interactions) {
+      for (const interaction of capableIinteractions) {
         try {
           await interaction.handle(message.interaction);
 
