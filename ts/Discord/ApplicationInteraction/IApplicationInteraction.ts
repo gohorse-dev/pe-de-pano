@@ -14,7 +14,7 @@ export interface IApplicationInteraction {
    * Verifica se é uma interação que deve ser tratada.
    * @param interaction Interação chegada do discord.
    */
-  canHandle(interaction: Interaction): boolean;
+  canHandle(interaction: Interaction): Promise<boolean> | boolean;
 
   /**
    * Trata a interação.

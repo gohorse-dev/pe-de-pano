@@ -1,0 +1,104 @@
+import { Interaction, MessageComponentInteraction } from 'discord.js';
+import { ApplicationInteraction } from './ApplicationInteraction';
+import {
+  ApplicationInteractionInstance,
+  ApplicationInteractionInstanceConstructor
+} from './ApplicationInteractionInstance';
+import { ShouldNeverHappenError } from '@sergiocabral/helper';
+import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionInstanceMemory';
+import { ApplicationInteractionInstanceStep } from './ApplicationInteractionInstanceStep';
+
+/**
+ * Representa uma interação de Discord que cria uma instância para cada tratamento.
+ */
+export abstract class ApplicationInteractionAsInstance<
+  TMemory extends ApplicationInteractionInstanceMemory
+> extends ApplicationInteraction {
+  /**
+   * Identificador de uso geral.
+   */
+  public id: string = ApplicationInteraction.generateId(this.constructor.name);
+
+  /**
+   * Instâncias em execução.
+   */
+  protected instances: ApplicationInteractionInstance<TMemory>[] = [];
+
+  /**
+   * Lista de todos os passos de todas as instâncias.
+   */
+  private get allInstancesSteps(): ApplicationInteractionInstanceStep<TMemory>[] {
+    return this.instances
+      .map(instance => instance.steps)
+      .reduce((result, current) => {
+        result.push(...current);
+        return result;
+      }, []);
+  }
+
+  /**
+   * Construtor para instância.
+   */
+  protected abstract get instanceConstructor(): ApplicationInteractionInstanceConstructor<TMemory>;
+
+  /**
+   * Verifica se é uma interação que deve ser tratada.
+   * @param discordInteraction Interação chegada do discord.
+   */
+  protected abstract canStartHandle(
+    discordInteraction: Interaction
+  ): Promise<boolean> | boolean;
+
+  /**
+   * Verifica se é uma interação que deve ser tratada.
+   * @param discordInteraction Interação chegada do discord.
+   */
+  public override canHandle(discordInteraction: Interaction): boolean {
+    const customId =
+      discordInteraction instanceof MessageComponentInteraction
+        ? discordInteraction.customId
+        : undefined;
+
+    if (customId === undefined) {
+      if (this.canStartHandle(discordInteraction)) {
+        this.instances.push(
+          new this.instanceConstructor(this, discordInteraction)
+        );
+        return true;
+      }
+      return false;
+    } else {
+      return this.allInstancesSteps.some(step => customId.startsWith(step.id));
+    }
+  }
+
+  /**
+   * Trata a interação.
+   * @param discordInteraction Interação chegada do discord.
+   */
+  public override async handle(discordInteraction: Interaction): Promise<void> {
+    const customId =
+      discordInteraction instanceof MessageComponentInteraction
+        ? discordInteraction.customId
+        : undefined;
+
+    if (customId === undefined) {
+      for (const instance of this.instances) {
+        if (
+          instance.discordInteraction === discordInteraction &&
+          !instance.alreadyStartedHandle
+        ) {
+          await instance.startHandle(discordInteraction);
+        }
+      }
+    } else {
+      const step = this.allInstancesSteps.find(step =>
+        customId.startsWith(step.id)
+      );
+      if (step === undefined) {
+        throw new ShouldNeverHappenError('Instance step not found.');
+      }
+      await step.handle(discordInteraction);
+    }
+  }
+}
