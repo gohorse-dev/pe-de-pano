@@ -1,7 +1,8 @@
-import { Interaction, InteractionResponse } from 'discord.js';
+import { Interaction, InteractionResponse, Routes } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
 import { ShouldNeverHappenError } from '@sergiocabral/helper';
+import { DiscordApplicationCommandsResult } from '../../../Model/DiscordApplicationCommandsResult';
 
 /**
  * Resposta Não para a pergunta de confirmação.
@@ -19,6 +20,18 @@ export class ShutdownInteractionStepAnswerNo extends ApplicationInteractionInsta
       throw new ShouldNeverHappenError(
         'Expected a Discord interaction as replieable.'
       );
+    }
+
+    const lastDiscordInteraction =
+      this.applicationInteractionInstance.discordInteractions.last();
+    if (lastDiscordInteraction?.isMessageComponent()) {
+      const messageId = lastDiscordInteraction.message.id;
+      // TODO: Deletar mensagem.
+
+      // const response = (await this.rest.put(
+      //     Routes.applicationCommands(this.configuration.applicationId),
+      //     { body: commands }
+      // )) as DiscordApplicationCommandsResult[];
     }
 
     return discordInteraction.reply({
