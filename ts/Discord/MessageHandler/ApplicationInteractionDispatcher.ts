@@ -1,6 +1,6 @@
 import { HelperText, Logger, LogLevel, Message } from '@sergiocabral/helper';
 import { DiscordInteractionReceived } from '../Message/DiscordInteractionReceived';
-import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
+import { ApplicationInteraction } from '../ApplicationInteraction/ApplicationInteraction';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 
 /**
@@ -22,7 +22,7 @@ export class ApplicationInteractionDispatcher {
   /**
    * Interações disponíveis.
    */
-  private interactions: IApplicationInteraction[] = [];
+  private interactions: ApplicationInteraction[] = [];
 
   /**
    * Inscrição nas mensagens.
@@ -44,7 +44,7 @@ export class ApplicationInteractionDispatcher {
   private handleInteractionsLoaded(
     message: ApplicationInteractionsLoaded
   ): void {
-    this.interactions = Array<IApplicationInteraction>().concat(
+    this.interactions = Array<ApplicationInteraction>().concat(
       message.interactions
     );
   }
@@ -57,7 +57,7 @@ export class ApplicationInteractionDispatcher {
   ): Promise<void> {
     const discordInteraction = message.interaction;
 
-    const capableIinteractions: IApplicationInteraction[] = [];
+    const capableIinteractions: ApplicationInteraction[] = [];
     for (const interaction of this.interactions) {
       if (await interaction.canHandle(discordInteraction)) {
         capableIinteractions.push(interaction);

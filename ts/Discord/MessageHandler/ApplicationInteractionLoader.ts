@@ -9,10 +9,9 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import { ApplicationInteraction } from '../ApplicationInteraction/ApplicationInteraction';
 import { ApplicationInteractionConfiguration } from '../ApplicationInteraction/ApplicationInteractionConfiguration';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
-import { IApplicationInteraction } from '../ApplicationInteraction/IApplicationInteraction';
+import { ApplicationInteraction } from '../ApplicationInteraction/ApplicationInteraction';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
 import path from 'node:path';
 
@@ -38,7 +37,7 @@ export class ApplicationInteractionLoader {
   /**
    * Interações disponíveis e carregadas.
    */
-  private interactions: IApplicationInteraction[] = [];
+  private interactions: ApplicationInteraction[] = [];
 
   /**
    * Inscrição nas mensagens.
@@ -62,7 +61,7 @@ export class ApplicationInteractionLoader {
    * Mensagem: GetInteractions
    */
   private handleGetInteractions(message: GetApplicationInteractions): void {
-    message.interactions = Array<IApplicationInteraction>().concat(
+    message.interactions = Array<ApplicationInteraction>().concat(
       this.interactions
     );
   }
@@ -97,7 +96,7 @@ export class ApplicationInteractionLoader {
     );
 
     await new ApplicationInteractionsLoaded(
-      Array<IApplicationInteraction>().concat(this.interactions)
+      Array<ApplicationInteraction>().concat(this.interactions)
     ).sendAsync();
 
     return this.interactions.length;
@@ -109,7 +108,7 @@ export class ApplicationInteractionLoader {
    */
   private async loadInteraction(
     interactionFilePath: string
-  ): Promise<IApplicationInteraction | undefined> {
+  ): Promise<ApplicationInteraction | undefined> {
     const regexInteractionName = /[^\\/]+(?=\.[^.]+)/;
     const interactionName = (interactionFilePath.match(regexInteractionName) ??
       [])[0];
@@ -192,7 +191,7 @@ export class ApplicationInteractionLoader {
       return undefined;
     }
 
-    return interaction as IApplicationInteraction;
+    return interaction;
   }
 
   /**

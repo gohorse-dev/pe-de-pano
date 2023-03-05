@@ -13,7 +13,7 @@ import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
 import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
-import { IApplicationInteractionCommand } from '../ApplicationInteraction/IApplicationInteractionCommand';
+import { ApplicationInteractionCommand } from '../ApplicationInteraction/ApplicationInteractionCommand';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 
 /**
@@ -100,7 +100,7 @@ export class DiscordCommandRegistration {
       .map(interaction => interaction.command)
       .filter(
         command => command !== undefined
-      ) as IApplicationInteractionCommand[];
+      ) as ApplicationInteractionCommand[];
 
     Logger.post(
       'Registering Message commands. Total: {count}. Names: {commandNameList}',

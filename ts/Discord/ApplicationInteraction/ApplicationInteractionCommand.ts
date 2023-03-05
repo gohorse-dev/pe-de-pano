@@ -1,12 +1,9 @@
-import { IApplicationInteractionCommand } from './IApplicationInteractionCommand';
 import { Interaction } from 'discord.js';
 
 /**
  * Representa um comando tratado pela aplicação
  */
-export class ApplicationInteractionCommand
-  implements IApplicationInteractionCommand
-{
+export class ApplicationInteractionCommand {
   /**
    * Construtor.
    * @param name Nome

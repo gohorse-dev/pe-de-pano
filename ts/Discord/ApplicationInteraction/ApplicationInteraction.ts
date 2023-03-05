@@ -1,8 +1,7 @@
-import { IApplicationInteraction } from './IApplicationInteraction';
 import { Interaction } from 'discord.js';
 import { ApplicationInteractionConfiguration } from './ApplicationInteractionConfiguration';
-import { IApplicationInteractionCommand } from './IApplicationInteractionCommand';
 import { HelperCryptography } from '@sergiocabral/helper';
+import { ApplicationInteractionCommand } from './ApplicationInteractionCommand';
 
 // TODO: Criar serviço de tradução para interações com o Discord.
 // TODO: Revisar documentação nos comentários
@@ -10,9 +9,7 @@ import { HelperCryptography } from '@sergiocabral/helper';
 /**
  * Representa uma interação de Discord tratada pela aplicação.
  */
-export abstract class ApplicationInteraction
-  implements IApplicationInteraction
-{
+export abstract class ApplicationInteraction {
   /**
    * Gerador de Id.
    * @param data Dados de entrada.
@@ -32,7 +29,7 @@ export abstract class ApplicationInteraction
   /**
    * Informações como comando (se aplicável).
    */
-  public abstract get command(): IApplicationInteractionCommand | undefined;
+  public abstract get command(): ApplicationInteractionCommand | undefined;
 
   /**
    * Verifica se é uma interação que deve ser tratada.
