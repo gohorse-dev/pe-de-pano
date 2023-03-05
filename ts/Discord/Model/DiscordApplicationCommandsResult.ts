@@ -1,4 +1,4 @@
-export type ApplicationCommandsResult = {
+export type DiscordApplicationCommandsResult = {
   id: string;
   description_localizations: unknown;
   application_id: string;

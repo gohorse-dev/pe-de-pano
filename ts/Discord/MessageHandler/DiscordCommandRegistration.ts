@@ -11,10 +11,11 @@ import { DiscordAuthenticationConfiguration } from '../DiscordAuthenticationConf
 import { ConfigurationReloaded } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { REST, Routes } from 'discord.js';
-import { ApplicationCommandsResult } from '../Model/ApplicationCommandsResult';
+import { DiscordApplicationCommandsResult } from '../Model/DiscordApplicationCommandsResult';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
 import { ApplicationInteractionCommand } from '../ApplicationInteraction/ApplicationInteractionCommand';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
+import { ClearAllCommandFromDiscord } from '../Message/ClearAllCommandFromDiscord';
 
 /**
  * Responsável pelo registro de comandos no Discord.
@@ -57,6 +58,10 @@ export class DiscordCommandRegistration {
       this.handleConfigurationReloaded.bind(this)
     );
     Message.subscribe(
+      ClearAllCommandFromDiscord,
+      this.handleClearAllCommandFromDiscord.bind(this)
+    );
+    Message.subscribe(
       RegisterCommandOnDiscord,
       this.handleRegisterCommandOnDiscord.bind(this)
     );
@@ -66,6 +71,7 @@ export class DiscordCommandRegistration {
    * Mensagem: ApplicationInteractionsLoaded
    */
   private async handleApplicationInteractionsLoaded(): Promise<void> {
+    await new ClearAllCommandFromDiscord().sendAsync();
     await new RegisterCommandOnDiscord().sendAsync();
   }
 
@@ -84,7 +90,47 @@ export class DiscordCommandRegistration {
   }
 
   /**
-   * Mensagem: RegisterCommands
+   * Mensagem: ClearAllCommandFromDiscord
+   */
+  private async handleClearAllCommandFromDiscord(): Promise<void> {
+    Logger.post(
+      'Removing the registration of all commands.',
+      undefined,
+      LogLevel.Verbose,
+      DiscordCommandRegistration.logContext
+    );
+
+    try {
+      const response = (await this.rest.put(
+        Routes.applicationCommands(this.configuration.applicationId),
+        { body: [] }
+      )) as DiscordApplicationCommandsResult[];
+
+      if (!Array.isArray(response) || response.length !== 0) {
+        throw new InvalidDataError('An empty array was expected as a result.');
+      }
+
+      Logger.post(
+        'Successfully removed the registration of all commands.',
+        undefined,
+        LogLevel.Debug,
+        DiscordCommandRegistration.logContext
+      );
+    } catch (error) {
+      Logger.post(
+        'An error occurred while unregistering all commands: {errorDescription}',
+        () => ({
+          errorDescription: HelperText.formatError(error),
+          error
+        }),
+        LogLevel.Error,
+        DiscordCommandRegistration.logContext
+      );
+    }
+  }
+
+  /**
+   * Mensagem: RegisterCommandOnDiscord
    */
   private async handleRegisterCommandOnDiscord(): Promise<void> {
     const interactions = (await new GetApplicationInteractions().sendAsync())
@@ -117,10 +163,10 @@ export class DiscordCommandRegistration {
       const response = (await this.rest.put(
         Routes.applicationCommands(this.configuration.applicationId),
         { body: commands }
-      )) as ApplicationCommandsResult[];
+      )) as DiscordApplicationCommandsResult[];
 
       if (!Array.isArray(response)) {
-        throw new InvalidDataError('An array is expected as a result.');
+        throw new InvalidDataError('An array was expected as a result.');
       }
 
       Logger.post(
