@@ -9,7 +9,6 @@ import {
   ShouldNeverHappenError
 } from '@sergiocabral/helper';
 import { ApplicationReady } from '../../App/Message/ApplicationReady';
-import { ApplicationInteractionConfiguration } from '../ApplicationInteraction/ApplicationInteractionConfiguration';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 import { ApplicationInteraction } from '../ApplicationInteraction/ApplicationInteraction';
 import { GetApplicationInteractions } from '../Message/GetApplicationInteractions';
@@ -172,11 +171,7 @@ export class ApplicationInteractionLoader {
       return undefined;
     }
 
-    const configuration: ApplicationInteractionConfiguration = {
-      applicationParameters: this.applicationParameters
-    };
-
-    const interaction = new interactionClassConstructor(configuration);
+    const interaction = new interactionClassConstructor();
 
     if (!(interaction instanceof ApplicationInteraction)) {
       Logger.post(

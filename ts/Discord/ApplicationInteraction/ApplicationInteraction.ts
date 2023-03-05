@@ -1,5 +1,4 @@
 import { Interaction } from 'discord.js';
-import { ApplicationInteractionConfiguration } from './ApplicationInteractionConfiguration';
 import { HelperCryptography } from '@sergiocabral/helper';
 import { ApplicationInteractionCommand } from './ApplicationInteractionCommand';
 
@@ -17,14 +16,6 @@ export abstract class ApplicationInteraction {
   public static generateId(data: unknown): string {
     return HelperCryptography.hash(data, 'md5').substring(0, 5);
   }
-
-  /**
-   * Construtor.
-   * @param configuration Configurações usadas na construção de um comando.
-   */
-  public constructor(
-    protected readonly configuration: ApplicationInteractionConfiguration
-  ) {}
 
   /**
    * Informações como comando (se aplicável).
