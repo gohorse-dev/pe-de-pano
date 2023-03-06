@@ -1,5 +1,5 @@
 import { InvalidExecutionError } from '@sergiocabral/helper';
-import { Interaction, InteractionResponse } from 'discord.js';
+import { Interaction, InteractionResponse, REST } from 'discord.js';
 import { ApplicationInteractionAsInstance } from './ApplicationInteractionAsInstance';
 import {
   ApplicationInteractionInstanceStep,
@@ -8,6 +8,7 @@ import {
 import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionInstanceMemory';
 import { ApplicationInteraction } from './ApplicationInteraction';
 import { Queue } from '../../Helper/Queue';
+import { GetDiscordRestInstance } from '../Message/GetDiscordRestInstance';
 
 /**
  * Construtor para ApplicationInteractionInstance
@@ -35,6 +36,17 @@ export abstract class ApplicationInteractionInstance<
     discordInteraction: Interaction
   ) {
     this.discordInteractions.enqueueIfNotExists(discordInteraction);
+  }
+
+  /**
+   * Obtem a instância para requisição REST com o Discord
+   */
+  public async discordRest(): Promise<REST> {
+    const rest = (await new GetDiscordRestInstance().sendAsync()).message.rest;
+    if (rest === undefined) {
+      throw new InvalidExecutionError('Discord REST instance was not defined.');
+    }
+    return rest;
   }
 
   /**
