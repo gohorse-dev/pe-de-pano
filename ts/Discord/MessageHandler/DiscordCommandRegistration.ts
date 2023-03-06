@@ -16,6 +16,7 @@ import { GetApplicationInteractions } from '../Message/GetApplicationInteraction
 import { ApplicationInteractionCommand } from '../ApplicationInteraction/ApplicationInteractionCommand';
 import { ApplicationInteractionsLoaded } from '../Message/ApplicationInteractionsLoaded';
 import { ClearAllCommandFromDiscord } from '../Message/ClearAllCommandFromDiscord';
+import { GetDiscordRestInstance } from '../Message/GetDiscordRestInstance';
 
 /**
  * Responsável pelo registro de comandos no Discord.
@@ -34,7 +35,6 @@ export class DiscordCommandRegistration {
     private readonly getConfiguration: () => DiscordAuthenticationConfiguration
   ) {
     this.configuration = getConfiguration();
-    this.rest = this.createRest();
     this.subscribeToMessages();
   }
 
@@ -43,7 +43,17 @@ export class DiscordCommandRegistration {
   /**
    * Comunicador com a API do Message via REST.
    */
-  private rest: REST;
+  private restValue?: REST;
+
+  /**
+   * Comunicador com a API do Message via REST
+   */
+  public get rest(): REST {
+    if (this.restValue === undefined) {
+      throw new InvalidExecutionError('Discord REST instance is not ready.');
+    }
+    return this.restValue;
+  }
 
   /**
    * Inscrição nas mensagens.
@@ -71,6 +81,7 @@ export class DiscordCommandRegistration {
    * Mensagem: ApplicationInteractionsLoaded
    */
   private async handleApplicationInteractionsLoaded(): Promise<void> {
+    this.restValue = await this.getRestInstance();
     await new ClearAllCommandFromDiscord().sendAsync();
     await new RegisterCommandOnDiscord().sendAsync();
   }
@@ -85,8 +96,19 @@ export class DiscordCommandRegistration {
     if (configuration !== undefined) {
       this.configuration = configuration;
       await new RegisterCommandOnDiscord().sendAsync();
-      this.rest = this.createRest();
+      this.restValue = await this.getRestInstance();
     }
+  }
+
+  /**
+   * Obtem a instância para requisição REST com o Discord
+   */
+  private async getRestInstance(): Promise<REST> {
+    const rest = (await new GetDiscordRestInstance().sendAsync()).message.rest;
+    if (rest === undefined) {
+      throw new InvalidExecutionError('Discord REST instance was not defined.');
+    }
+    return rest;
   }
 
   /**
@@ -191,14 +213,5 @@ export class DiscordCommandRegistration {
         DiscordCommandRegistration.logContext
       );
     }
-  }
-
-  /**
-   * Cria uma instância REST para comunicação com o Discord.
-   */
-  private createRest(): REST {
-    return new REST({ version: '10' }).setToken(
-      this.configuration.applicationToken
-    );
   }
 }
