@@ -2,7 +2,6 @@ import { Interaction, InteractionResponse, Routes } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
 import { ShouldNeverHappenError } from '@sergiocabral/helper';
-import { DiscordApplicationCommandsResult } from '../../../Model/DiscordApplicationCommandsResult';
 
 /**
  * Resposta Não para a pergunta de confirmação.

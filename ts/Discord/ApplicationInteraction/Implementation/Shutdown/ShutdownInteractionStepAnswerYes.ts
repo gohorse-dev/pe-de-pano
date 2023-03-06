@@ -22,7 +22,7 @@ export class ShutdownInteractionStepAnswerYes extends ApplicationInteractionInst
       );
     }
 
-    await discordInteraction.deleteReply();
+    // await discordInteraction.deleteReply();
 
     await new TerminateApplication(Instance.id, Instance.id).sendAsync();
 
