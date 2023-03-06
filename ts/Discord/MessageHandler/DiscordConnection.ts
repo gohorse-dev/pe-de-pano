@@ -13,7 +13,7 @@ import {
   GlobalDefinition
 } from '@gohorse/npm-core';
 import { ApplicationConfiguration } from '@gohorse/npm-application';
-import { Client, IntentsBitField } from 'discord.js';
+import { Client, IntentsBitField, REST } from 'discord.js';
 import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
 
@@ -35,6 +35,7 @@ export class DiscordConnection {
   ) {
     this.configuration = getConfiguration();
     this.client = this.createClient();
+    this.rest = this.createRest();
     this.subscribeToMessages();
   }
 
@@ -44,6 +45,11 @@ export class DiscordConnection {
    * Cliente para o Message.
    */
   private client: Client;
+
+  /**
+   * Comunicador com a API do Message via REST.
+   */
+  private rest: REST;
 
   /**
    * Verifica se o cliente está logado.
@@ -96,6 +102,7 @@ export class DiscordConnection {
         await this.logout();
         await this.login();
       }
+      this.rest = this.createRest();
     }
   }
 
@@ -104,6 +111,15 @@ export class DiscordConnection {
    */
   private createClient(): Client {
     return new Client({ intents: [IntentsBitField.Flags.Guilds] });
+  }
+
+  /**
+   * Cria uma instância REST para comunicação com o Discord.
+   */
+  private createRest(): REST {
+    return new REST({ version: '10' }).setToken(
+      this.configuration.applicationToken
+    );
   }
 
   /**
