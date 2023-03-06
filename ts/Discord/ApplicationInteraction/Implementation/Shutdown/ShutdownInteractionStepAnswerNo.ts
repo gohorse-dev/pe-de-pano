@@ -24,13 +24,7 @@ export class ShutdownInteractionStepAnswerNo extends ApplicationInteractionInsta
     const lastDiscordInteraction =
       this.applicationInteractionInstance.discordInteractions.last();
     if (lastDiscordInteraction?.isMessageComponent()) {
-      const messageId = lastDiscordInteraction.message.id;
-      // TODO: Deletar mensagem.
-
-      // const response = (await this.rest.put(
-      //     Routes.applicationCommands(this.configuration.applicationId),
-      //     { body: commands }
-      // )) as DiscordApplicationCommandsResult[];
+      await lastDiscordInteraction.deleteReply();
     }
 
     return discordInteraction.reply({

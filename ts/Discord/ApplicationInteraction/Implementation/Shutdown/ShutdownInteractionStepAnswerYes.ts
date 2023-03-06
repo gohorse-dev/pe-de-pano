@@ -22,13 +22,19 @@ export class ShutdownInteractionStepAnswerYes extends ApplicationInteractionInst
       );
     }
 
-    // await discordInteraction.deleteReply();
+    const lastDiscordInteraction =
+      this.applicationInteractionInstance.discordInteractions.last();
+    if (lastDiscordInteraction?.isMessageComponent()) {
+      await lastDiscordInteraction.deleteReply();
+    }
 
-    await new TerminateApplication(Instance.id, Instance.id).sendAsync();
-
-    return discordInteraction.reply({
+    const response = await discordInteraction.reply({
       content: "I'm going, but I'll be back.".translate(),
       ephemeral: true
     });
+
+    await new TerminateApplication(Instance.id, Instance.id).sendAsync();
+
+    return response;
   }
 }

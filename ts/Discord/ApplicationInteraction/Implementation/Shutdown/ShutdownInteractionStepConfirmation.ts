@@ -76,7 +76,7 @@ export class ShutdownInteractionStepConfirmation extends ApplicationInteractionI
       this.buttonYesId
     );
 
-    return await discordInteraction.reply({
+    return discordInteraction.reply({
       content: 'You intend to kill me, is that it?'.translate(),
       components: [row],
       ephemeral: true
