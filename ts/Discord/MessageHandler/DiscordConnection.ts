@@ -16,6 +16,7 @@ import { ApplicationConfiguration } from '@gohorse/npm-application';
 import { Client, IntentsBitField, REST } from 'discord.js';
 import { DiscordClientConnected } from '../Message/DiscordClientConnected';
 import { DiscordClientDisconnected } from '../Message/DiscordClientDisconnected';
+import { GetDiscordRestInstance } from '../Message/GetDiscordRestInstance';
 
 /**
  * Responsável pela gerência da conexão com o Discord.
@@ -71,6 +72,10 @@ export class DiscordConnection {
       ApplicationTerminated,
       this.handleApplicationTerminated.bind(this)
     );
+    Message.subscribe(
+      GetDiscordRestInstance,
+      this.handleGetDiscordRestInstance.bind(this)
+    );
   }
 
   /**
@@ -104,6 +109,13 @@ export class DiscordConnection {
       }
       this.rest = this.createRest();
     }
+  }
+
+  /**
+   * Mensagem: GetDiscordRestInstance
+   */
+  private handleGetDiscordRestInstance(message: GetDiscordRestInstance): void {
+    message.rest = this.rest;
   }
 
   /**
