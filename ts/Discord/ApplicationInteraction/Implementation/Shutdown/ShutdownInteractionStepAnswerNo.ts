@@ -1,4 +1,4 @@
-import { Interaction, InteractionResponse, Routes } from 'discord.js';
+import { Interaction, InteractionResponse } from 'discord.js';
 import { ApplicationInteractionInstanceStep } from '../../ApplicationInteractionInstanceStep';
 import { ShutdownInteractionInstanceMemory } from './ShutdownInteractionInstanceMemory';
 import { ShouldNeverHappenError } from '@sergiocabral/helper';
@@ -26,6 +26,8 @@ export class ShutdownInteractionStepAnswerNo extends ApplicationInteractionInsta
     if (lastDiscordInteraction?.isMessageComponent()) {
       await lastDiscordInteraction.deleteReply();
     }
+
+    void this.applicationInteractionInstance.dispose();
 
     return discordInteraction.reply({
       content: 'Phew! What a fright.'.translate(),

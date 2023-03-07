@@ -28,13 +28,13 @@ export abstract class ApplicationInteractionAsInstance<
   /**
    * Instâncias em execução.
    */
-  protected instances: ApplicationInteractionInstance<TMemory>[] = [];
+  protected instances = new Set<ApplicationInteractionInstance<TMemory>>();
 
   /**
    * Lista de todos os passos de todas as instâncias.
    */
   private get allInstancesSteps(): ApplicationInteractionInstanceStep<TMemory>[] {
-    return this.instances
+    return Array.from(this.instances)
       .map(instance => instance.steps)
       .reduce((result, current) => {
         result.push(...current);
@@ -48,9 +48,9 @@ export abstract class ApplicationInteractionAsInstance<
   private findStepById(
     id: string
   ): ApplicationInteractionInstanceStep<TMemory> | undefined {
-    let step = this.instances.find(instance => instance.stepById[id])?.stepById[
-      id
-    ];
+    let step = Array.from(this.instances).find(
+      instance => instance.stepById[id]
+    )?.stepById[id];
 
     if (step === undefined) {
       step = this.allInstancesSteps.find(step => id.startsWith(step.id));
@@ -86,7 +86,8 @@ export abstract class ApplicationInteractionAsInstance<
       if (this.canStartHandle(discordInteraction)) {
         // TODO: Destruir instância depois de um tempo?
         const instance = new this.instanceConstructor(this, discordInteraction);
-        this.instances.push(instance);
+        instance.disposeListener.on(this.onInstanceDisposed.bind(this));
+        this.instances.add(instance);
 
         Logger.post(
           'A new "{applicationInteractionInstanceName}" instance with id "{applicationInteractionInstanceId}" was created to handle the Discord interaction with id "{discordInteractionId}".',
@@ -119,6 +120,10 @@ export abstract class ApplicationInteractionAsInstance<
 
     if (customId === undefined) {
       for (const instance of this.instances) {
+        if (instance.isDisposed) {
+          continue;
+        }
+
         if (
           instance.discordInteractions.first() === discordInteraction &&
           !instance.alreadyStartedHandle
@@ -181,5 +186,15 @@ export abstract class ApplicationInteractionAsInstance<
         ApplicationInteractionAsInstance.logContext
       );
     }
+  }
+
+  /**
+   * Quando uma instância é liberada.
+   */
+  private onInstanceDisposed(
+    instance: ApplicationInteractionInstance<TMemory>
+  ): void {
+    this.instances.delete(instance);
+    instance.disposeListener.off(this.onInstanceDisposed.bind(this));
   }
 }

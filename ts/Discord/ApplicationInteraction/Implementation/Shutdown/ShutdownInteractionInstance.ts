@@ -15,4 +15,11 @@ export class ShutdownInteractionInstance extends ApplicationInteractionInstance<
    * Primeira etapa de no tratamento da interação.
    */
   public override entryStepConstructor = ShutdownInteractionStepConfirmation;
+
+  /**
+   * Liberação de recursos.
+   */
+  protected override doDispose(): void {
+    // Nothing to do
+  }
 }

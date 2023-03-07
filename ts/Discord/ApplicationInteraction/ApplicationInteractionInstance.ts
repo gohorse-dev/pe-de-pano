@@ -9,6 +9,7 @@ import { ApplicationInteractionInstanceMemory } from './ApplicationInteractionIn
 import { ApplicationInteraction } from './ApplicationInteraction';
 import { Queue } from '../../Helper/Queue';
 import { GetDiscordRestInstance } from '../Message/GetDiscordRestInstance';
+import { Listener, ListenerFunction } from '../../Helper/Listener';
 
 /**
  * Construtor para ApplicationInteractionInstance
@@ -138,6 +139,53 @@ export abstract class ApplicationInteractionInstance<
     this.stepsValue.push(step);
     for (const id of ids) {
       this.stepById[id] = step;
+    }
+  }
+
+  /**
+   * Listeners para dispose.
+   */
+  private disposeListeners = new Set<
+    ListenerFunction<ApplicationInteractionInstance<TMemory>>
+  >();
+
+  /**
+   * Listener para evento de dispose.
+   */
+  public disposeListener = new Listener<
+    ApplicationInteractionInstance<TMemory>
+  >(this.disposeListeners);
+
+  /**
+   * Sinaliza que já foi liberado.
+   */
+  private isDisposedValue = false;
+
+  /**
+   * Sinaliza que já foi liberado.
+   */
+  public get isDisposed() {
+    return this.isDisposedValue;
+  }
+
+  /**
+   * Liberação de recursos.
+   */
+  protected abstract doDispose(): Promise<void> | void;
+
+  /**
+   * Liberação de recursos.
+   */
+  public async dispose(): Promise<void> {
+    if (this.isDisposedValue) {
+      throw new InvalidExecutionError('This instance already disposed.');
+    }
+
+    await this.doDispose();
+    this.isDisposedValue = true;
+
+    for (const disposeListener of this.disposeListeners) {
+      await disposeListener(this);
     }
   }
 }

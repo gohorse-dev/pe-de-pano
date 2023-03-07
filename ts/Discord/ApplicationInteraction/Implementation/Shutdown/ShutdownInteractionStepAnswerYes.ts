@@ -33,6 +33,8 @@ export class ShutdownInteractionStepAnswerYes extends ApplicationInteractionInst
       ephemeral: true
     });
 
+    void this.applicationInteractionInstance.dispose();
+
     await new TerminateApplication(Instance.id, Instance.id).sendAsync();
 
     return response;
