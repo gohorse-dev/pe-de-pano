@@ -60,10 +60,10 @@ export abstract class ApplicationInteractionInstanceStep<
    * @param discordInteraction Interação do Discord.
    */
   public async handle(discordInteraction: Interaction): Promise<void> {
+    const discordInteractionResponse = await this.doHandle(discordInteraction);
     this.applicationInteractionInstance.discordInteractions.enqueueIfNotExists(
       discordInteraction
     );
-    const discordInteractionResponse = await this.doHandle(discordInteraction);
     this.applicationInteractionInstance.discordInteractionsResponses.enqueueIfNotExists(
       discordInteractionResponse
     );
