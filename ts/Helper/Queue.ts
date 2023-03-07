@@ -36,4 +36,11 @@ export class Queue<T> {
       this.value.push(item);
     }
   }
+
+  /**
+   * Limpa a fila.
+   */
+  public clear(): void {
+    this.value.length = 0;
+  }
 }

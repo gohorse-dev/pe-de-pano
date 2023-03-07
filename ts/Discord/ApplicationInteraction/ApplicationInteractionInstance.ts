@@ -188,6 +188,9 @@ export abstract class ApplicationInteractionInstance<
       delete this.stepById[key];
     }
 
+    this.discordInteractions.clear();
+    this.discordInteractionsResponses.clear();
+
     this.isDisposedValue = true;
 
     for (const disposeListener of this.disposeListeners) {
