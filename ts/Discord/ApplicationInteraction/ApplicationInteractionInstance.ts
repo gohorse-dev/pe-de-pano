@@ -182,6 +182,12 @@ export abstract class ApplicationInteractionInstance<
     }
 
     await this.doDispose();
+
+    this.stepsValue.length = 0;
+    for (const key of Object.keys(this.stepById)) {
+      delete this.stepById[key];
+    }
+
     this.isDisposedValue = true;
 
     for (const disposeListener of this.disposeListeners) {
